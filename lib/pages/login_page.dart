@@ -123,7 +123,8 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController controller, IconData icon, String labelText) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(border: Border.all(color: Colors.redAccent)),
+      decoration: BoxDecoration(
+          border: new Border(bottom: new BorderSide(color: Colors.redAccent))),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ignite/assets/theme.dart';
 import 'package:ignite/pages/login_page.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays(
+      [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   runApp(MyApp());
 }
 
