@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
+  static const String id = "/loginPage";
   LoginPage({Key key}) : super(key: key);
 
   @override

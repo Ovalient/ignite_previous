@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^0.5.12+4
   font_awesome_flutter: ^8.11.0
   google_fonts: ^1.1.2
   flutter_native_splash: ^0.3.0
@@ -52,8 +53,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/icons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -75,20 +76,20 @@ flutter:
   #         style: italic
     - family: SCDream
       fonts:
-        - asset: lib/assets/fonts/SCDream1.ttf
+        - asset: assets/fonts/SCDream1.ttf
           weight: 100
-        - asset: lib/assets/fonts/SCDream3.ttf
+        - asset: assets/fonts/SCDream3.ttf
           weight: 300
-        - asset: lib/assets/fonts/SCDream5.ttf
-        - asset: lib/assets/fonts/SCDream7.ttf
+        - asset: assets/fonts/SCDream5.ttf
+        - asset: assets/fonts/SCDream7.ttf
           weight: 700
-        - asset: lib/assets/fonts/SCDream9.ttf
+        - asset: assets/fonts/SCDream9.ttf
           weight: 900
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-flutter_native_splash:
-  color: "#FF0000"
-  image: lib/assets/icons/Ignite_Icon.png
-  fullscreen: true
+# flutter_native_splash:
+#   color: "#FF0000"
+#   image: lib/assets/icons/Ignite_Icon.png
+#   fullscreen: true
