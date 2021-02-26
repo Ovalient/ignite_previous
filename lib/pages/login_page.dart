@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
@@ -83,32 +82,49 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         onPressed: () {},
                         color: Theme.of(context).accentColor,
-                        child: Text('Login',
+                        child: Text('Sign In',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),
                         textColor: Colors.white,
                       ),
                       SizedBox(height: 20),
-                      MaterialButton(
-                        elevation: 0,
-                        minWidth: double.maxFinite,
-                        height: 50,
-                        onPressed: () {
-                          //Here goes the logic for Google SignIn discussed in the next section
-                        },
-                        color: Colors.blue,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.google),
-                            SizedBox(width: 10),
-                            Text('Sign-in using Google',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                          ],
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).accentColor)),
+                        child: MaterialButton(
+                          elevation: 0,
+                          minWidth: double.maxFinite,
+                          height: 50,
+                          onPressed: () {},
+                          color: Colors.white,
+                          child: Text('Sign Up',
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                  fontSize: 16)),
+                          textColor: Colors.white,
                         ),
-                        textColor: Colors.white,
                       ),
+                      // MaterialButton(
+                      //   elevation: 0,
+                      //   minWidth: double.maxFinite,
+                      //   height: 50,
+                      //   onPressed: () {
+                      //     //Here goes the logic for Google SignIn discussed in the next section
+                      //   },
+                      //   color: Colors.blue,
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: <Widget>[
+                      //       Icon(FontAwesomeIcons.google),
+                      //       SizedBox(width: 10),
+                      //       Text('Sign-in using Google',
+                      //           style: TextStyle(
+                      //               color: Colors.white, fontSize: 16)),
+                      //     ],
+                      //   ),
+                      //   textColor: Colors.white,
+                      // ),
                     ],
                   ),
                 ),

@@ -17,5 +17,7 @@ const MaterialColor mainColors =
 final basicTheme = ThemeData(
   fontFamily: 'SCDream',
   primarySwatch: mainColors,
+  primaryColor: mainColors,
+  accentColor: mainColors[900],
   backgroundColor: Colors.white,
 );
