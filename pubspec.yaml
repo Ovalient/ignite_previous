@@ -30,8 +30,8 @@ dependencies:
   google_fonts: ^1.1.2
   font_awesome_flutter: ^8.11.0
   intro_slider: ^2.3.4
+  after_layout: ^1.0.7+2
 
-  provider: ^4.3.3
   google_sign_in: ^4.5.9
   firebase_core: ^0.7.0
   firebase_auth: ^0.20.1
@@ -80,16 +80,19 @@ flutter:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
+    - family: BarlowSemiCondensed
+      fonts: 
+        - asset: assets/fonts/BarlowSemiCondensed-Black.ttf
     - family: SCDream
       fonts:
-        - asset: assets/fonts/SCDream1.ttf
+        - asset: assets/fonts/SCDream-Thin.ttf
           weight: 100
-        - asset: assets/fonts/SCDream3.ttf
+        - asset: assets/fonts/SCDream-Light.ttf
           weight: 300
-        - asset: assets/fonts/SCDream5.ttf
-        - asset: assets/fonts/SCDream7.ttf
+        - asset: assets/fonts/SCDream-Medium.ttf
+        - asset: assets/fonts/SCDream-ExtraBold.ttf
           weight: 700
-        - asset: assets/fonts/SCDream9.ttf
+        - asset: assets/fonts/SCDream-Black.ttf
           weight: 900
   #
   # For details regarding fonts from package dependencies,

@@ -1,46 +1,47 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:ignite/pages/home_page.dart';
-import 'package:ignite/pages/login_page.dart';
+import 'package:ignite/pages/dashboard_page.dart';
+import 'package:ignite/pages/intro_page.dart';
+import 'package:ignite/pages/sign_in_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
-  static const String id = "/authPage";
+  static const String id = "/homePage";
   AuthPage({Key key}) : super(key: key);
 
   @override
   _AuthPageState createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<FirebaseProvider>(
-          create: (_) => FirebaseProvider(FirebaseAuth.instance),
-        ),
-        StreamProvider(
-          create: (context) => context.read<FirebaseProvider>().authState,
-        ),
-      ],
-      child: Authenticate(),
-    );
-  }
-}
+class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _seen = (prefs.getBool('seen') ?? false);
 
-class Authenticate extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //Instance to know the authentication state.
-    final firebaseUser = context.watch<User>();
-
-    if (firebaseUser != null) {
-      //Means that the user is logged in already and hence navigate to HomePage
-      return HomePage();
+    if (_seen) {
+      print(getUser());
+      if (getUser() != null) {
+        Navigator.popAndPushNamed(context, DashboardPage.id);
+      }
+      Navigator.popAndPushNamed(context, SignInPage.id);
+    } else {
+      await prefs.setBool('seen', true);
+      Navigator.popAndPushNamed(context, IntroPage.id);
     }
-    //The user isn't logged in and hence navigate to SignInPage.
-    return LoginPage();
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) => checkFirstSeen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 }

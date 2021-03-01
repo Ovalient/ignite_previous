@@ -134,40 +134,42 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: new IntroSlider(
-        // List slides
-        // slides: this.slides,
+      child: Scaffold(
+        body: new IntroSlider(
+          // List slides
+          // slides: this.slides,
 
-        // Skip button
-        renderSkipBtn: this.renderSkipBtn(),
+          // Skip button
+          renderSkipBtn: this.renderSkipBtn(),
 
-        // Next button
-        renderNextBtn: this.renderNextBtn(),
+          // Next button
+          renderNextBtn: this.renderNextBtn(),
 
-        // Done button
-        renderDoneBtn: this.renderDoneBtn(),
-        onDonePress: this.onDonePress,
+          // Done button
+          renderDoneBtn: this.renderDoneBtn(),
+          onDonePress: this.onDonePress,
 
-        // Dot indicator
-        colorDot: Theme.of(context).primaryColor,
-        sizeDot: 13.0,
-        typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
+          // Dot indicator
+          colorDot: Theme.of(context).primaryColor,
+          sizeDot: 13.0,
+          typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
 
-        // Tabs
-        listCustomTabs: this.renderListCustomTabs(),
-        backgroundColorAllSlides: Colors.white,
-        refFuncGoToTab: (refFunc) {
-          this.goToTab = refFunc;
-        },
+          // Tabs
+          listCustomTabs: this.renderListCustomTabs(),
+          backgroundColorAllSlides: Colors.white,
+          refFuncGoToTab: (refFunc) {
+            this.goToTab = refFunc;
+          },
 
-        // Behavior
-        scrollPhysics: BouncingScrollPhysics(),
+          // Behavior
+          scrollPhysics: BouncingScrollPhysics(),
 
-        // Show or hide status bar
-        shouldHideStatusBar: true,
+          // Show or hide status bar
+          shouldHideStatusBar: true,
 
-        // On tab change completed
-        onTabChangeCompleted: this.onTabChangeCompleted,
+          // On tab change completed
+          onTabChangeCompleted: this.onTabChangeCompleted,
+        ),
       ),
     );
   }
