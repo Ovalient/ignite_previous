@@ -1,21 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/auth_page.dart';
-import 'package:after_layout/after_layout.dart';
 import 'package:ignite/pages/intro_page.dart';
 import 'package:ignite/pages/sign_in_page.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/pages/sign_up_page.dart';
-import 'package:ignite/utils/firebase_provider.dart';
 import 'package:ignite/utils/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays(
-      [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   await Firebase.initializeApp();
   runApp(MyApp());
 }

@@ -75,48 +75,71 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-String _uid;
-String _email;
-
 User getUser() {
   User user = _auth.currentUser;
   return user;
 }
 
 // 이메일/비밀번호로 Firebase에 회원가입
-Future<bool> signUp({String email, String password}) async {
-  bool flag = false;
+Future<String> signUp({String email, String password}) async {
+  String errorMessage;
 
   try {
     final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     if (userCredential.user != null) {
-      _uid = userCredential.user.uid;
-      _email = userCredential.user.email;
-      return flag = true;
+      return errorMessage = null;
     }
   } catch (e) {
-    print(e);
+    switch (e.code) {
+      case "email-already-in-use":
+        errorMessage = "Email address already registered.";
+        break;
+      case "invalid-email":
+        errorMessage = "Your email address is not valid.";
+        break;
+      case "operation-not-allowed":
+        errorMessage = "Your email address or password are not enabled.";
+        break;
+      case "weak-password":
+        errorMessage = "Your password is not strong enough.";
+        break;
+      default:
+        errorMessage = "Check your email and password.";
+    }
   }
-  return flag;
+  return errorMessage;
 }
 
 // 이메일/비밀번호로 Firebase에 로그인
-Future<bool> signIn({String email, String password}) async {
-  bool flag = false;
+Future<String> signIn({String email, String password}) async {
+  String errorMessage;
 
   try {
     final userCredential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     if (userCredential.user != null) {
-      _uid = userCredential.user.uid;
-      _email = userCredential.user.email;
-      return flag = true;
+      return errorMessage = null;
     }
   } catch (e) {
-    print(e);
+    switch (e.code) {
+      case "invalid-email":
+        errorMessage = "Your email address appears to be malformed.";
+        break;
+      case "wrong-password":
+        errorMessage = "Your password is wrong.";
+        break;
+      case "user-not-found":
+        errorMessage = "User with this email doesn't exist.";
+        break;
+      case "user-disabled":
+        errorMessage = "User with this email has been disabled.";
+        break;
+      default:
+        errorMessage = "Check your email and password.";
+    }
   }
-  return flag;
+  return errorMessage;
 }
 
 // Firebase로부터 로그아웃

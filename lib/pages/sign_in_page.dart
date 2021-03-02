@@ -18,11 +18,6 @@ class _SignInPageState extends State<SignInPage> {
   FocusNode _emailFocusNode;
   FocusNode _passwordFocusNode;
 
-  bool _isEditingEmail = false;
-  bool _isEditingPassword = false;
-
-  bool _isLoggingIn = false;
-
   String loginStatus;
   Color loginStringColor = Colors.green;
 
@@ -32,20 +27,19 @@ class _SignInPageState extends State<SignInPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       ).then((result) {
-        if (result) {
+        if (result == null) {
           print(result);
           setState(() {
             loginStatus = 'You have successfully signed in';
             loginStringColor = Colors.green;
           });
           Navigator.popAndPushNamed(context, DashboardPage.id);
+        } else {
+          setState(() {
+            loginStatus = result;
+            loginStringColor = Colors.red;
+          });
         }
-      }).catchError((error) {
-        print('Login Error: $error');
-        setState(() {
-          loginStatus = 'Error occured while logging in';
-          loginStringColor = Colors.red;
-        });
       });
     } else {
       setState(() {
@@ -53,14 +47,17 @@ class _SignInPageState extends State<SignInPage> {
         loginStringColor = Colors.red;
       });
     }
+    setState(() {
+      _passwordController.text = '';
+    });
   }
 
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
-    _emailController.text = null;
     _passwordController = TextEditingController();
+    _emailController.text = null;
     _passwordController.text = null;
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
@@ -132,6 +129,7 @@ class _SignInPageState extends State<SignInPage> {
                         child: TextField(
                           controller: _emailController,
                           focusNode: _emailFocusNode,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                               fillColor: Colors.redAccent,
                               contentPadding:
@@ -142,11 +140,6 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                               // prefix: Icon(icon),
                               border: InputBorder.none),
-                          onChanged: (value) {
-                            setState(() {
-                              _isEditingEmail = true;
-                            });
-                          },
                           onSubmitted: (value) {
                             _emailFocusNode.unfocus();
                             FocusScope.of(context)
@@ -175,15 +168,8 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                               // prefix: Icon(icon),
                               border: InputBorder.none),
-                          onChanged: (value) {
-                            setState(() {
-                              _isEditingPassword = true;
-                            });
-                          },
                           onSubmitted: (value) {
-                            setState(() {
-                              _isLoggingIn = true;
-                            });
+                            _passwordFocusNode.unfocus();
                             signInRequest();
                           },
                         ),
@@ -202,7 +188,6 @@ class _SignInPageState extends State<SignInPage> {
                         height: 50,
                         onPressed: () async {
                           setState(() {
-                            _isLoggingIn = true;
                             _emailFocusNode.unfocus();
                             _passwordFocusNode.unfocus();
                           });
