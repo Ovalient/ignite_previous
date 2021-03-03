@@ -93,19 +93,19 @@ Future<String> signUp({String email, String password}) async {
   } catch (e) {
     switch (e.code) {
       case "email-already-in-use":
-        errorMessage = "Email address already registered.";
+        errorMessage = "Email address already registered";
         break;
       case "invalid-email":
-        errorMessage = "Your email address is not valid.";
+        errorMessage = "Your email address is not valid";
         break;
       case "operation-not-allowed":
-        errorMessage = "Your email address or password are not enabled.";
+        errorMessage = "Your email address or password are not enabled";
         break;
       case "weak-password":
-        errorMessage = "Your password is not strong enough.";
+        errorMessage = "Your password is not strong enough";
         break;
       default:
-        errorMessage = "Check your email and password.";
+        errorMessage = "Check your email and password";
     }
   }
   return errorMessage;
@@ -118,25 +118,28 @@ Future<String> signIn({String email, String password}) async {
   try {
     final userCredential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-    if (userCredential.user != null) {
+    if (userCredential.user != null && userCredential.user.emailVerified) {
       return errorMessage = null;
+    } else {
+      userCredential.user.sendEmailVerification();
+      return "이메일 주소 인증이 필요합니다";
     }
   } catch (e) {
     switch (e.code) {
       case "invalid-email":
-        errorMessage = "Your email address appears to be malformed.";
+        errorMessage = "이메일 주소가 잘못되었습니다";
         break;
       case "wrong-password":
-        errorMessage = "Your password is wrong.";
+        errorMessage = "비밀번호가 잘못되었습니다";
         break;
       case "user-not-found":
-        errorMessage = "User with this email doesn't exist.";
+        errorMessage = "등록되지 않은 이메일 주소입니다";
         break;
       case "user-disabled":
-        errorMessage = "User with this email has been disabled.";
+        errorMessage = "비활성화 된 이메일 주소입니다";
         break;
       default:
-        errorMessage = "Check your email and password.";
+        errorMessage = "이메일 주소와 비밀번호를 확인해주세요";
     }
   }
   return errorMessage;

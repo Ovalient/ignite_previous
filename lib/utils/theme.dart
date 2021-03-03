@@ -20,4 +20,5 @@ final basicTheme = ThemeData(
   primaryColor: mainColors,
   accentColor: mainColors[900],
   backgroundColor: Colors.white,
+  brightness: Brightness.light,
 );

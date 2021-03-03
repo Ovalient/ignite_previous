@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/sign_up_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
+import 'package:ignite/widgets/email_verification_widget.dart';
 
 class SignInPage extends StatefulWidget {
   static const String id = "/signInPage";
@@ -34,6 +35,12 @@ class _SignInPageState extends State<SignInPage> {
             loginStringColor = Colors.green;
           });
           Navigator.popAndPushNamed(context, DashboardPage.id);
+        } else if (result == '이메일 주소 인증이 필요합니다') {
+          setState(() {
+            loginStatus = result;
+            loginStringColor = Colors.green;
+          });
+          emailVerificationDialog(context);
         } else {
           setState(() {
             loginStatus = result;
@@ -65,9 +72,9 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
           children: <Widget>[
             Expanded(
               flex: 1,

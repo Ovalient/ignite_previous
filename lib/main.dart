@@ -10,7 +10,8 @@ import 'package:ignite/utils/theme.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   await Firebase.initializeApp();
   runApp(MyApp());
 }

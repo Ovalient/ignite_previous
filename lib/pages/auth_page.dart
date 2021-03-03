@@ -1,5 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/intro_page.dart';
 import 'package:ignite/pages/sign_in_page.dart';
@@ -18,6 +19,8 @@ class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool _seen = (prefs.getBool('seen') ?? false);
+
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
 
     if (_seen) {
       print(getUser());

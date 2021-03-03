@@ -133,9 +133,9 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: new IntroSlider(
+    return Scaffold(
+      body: SafeArea(
+        child: new IntroSlider(
           // List slides
           // slides: this.slides,
 
@@ -165,7 +165,7 @@ class _IntroPageState extends State<IntroPage> {
           scrollPhysics: BouncingScrollPhysics(),
 
           // Show or hide status bar
-          shouldHideStatusBar: true,
+          shouldHideStatusBar: false,
 
           // On tab change completed
           onTabChangeCompleted: this.onTabChangeCompleted,

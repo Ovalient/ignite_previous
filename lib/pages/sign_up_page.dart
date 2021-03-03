@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
 
@@ -132,22 +133,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Sign Up',
-              style: TextStyle(color: Theme.of(context).accentColor)),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.keyboard_arrow_left,
-                color: Theme.of(context).accentColor),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up',
+            style: TextStyle(color: Theme.of(context).accentColor)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.keyboard_arrow_left,
+              color: Theme.of(context).accentColor),
         ),
-        body: Container(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      body: SafeArea(
+        child: Container(
           alignment: Alignment.center,
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: SingleChildScrollView(
