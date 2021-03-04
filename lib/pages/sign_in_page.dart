@@ -54,9 +54,6 @@ class _SignInPageState extends State<SignInPage> {
         loginStringColor = Colors.red;
       });
     }
-    setState(() {
-      _passwordController.text = '';
-    });
   }
 
   @override

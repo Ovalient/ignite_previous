@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // class FirebaseProvider {
@@ -74,6 +75,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // }
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
 User getUser() {
   User user = _auth.currentUser;
@@ -81,13 +83,21 @@ User getUser() {
 }
 
 // 이메일/비밀번호로 Firebase에 회원가입
-Future<String> signUp({String email, String password}) async {
+Future<String> signUp({String username, String email, String password}) async {
   String errorMessage;
 
   try {
     final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     if (userCredential.user != null) {
+      try {
+        await firestore.collection('user').doc(userCredential.user.uid).set({
+          'username': username,
+          'email': email,
+        });
+      } on FirebaseException catch (e) {
+        // e.g, e.code == 'canceled'
+      }
       return errorMessage = null;
     }
   } catch (e) {

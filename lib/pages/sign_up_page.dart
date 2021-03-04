@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String id = "/signUpPage";
@@ -91,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _passwordController.text != null &&
         _confirmController.text != null) {
       await signUp(
+        username: _usernameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       ).then((result) async {
@@ -98,13 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
           signupStatus = 'You have successfully signed up';
           signupStringColor = Colors.green;
         });
-        await signIn(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        ).then((result) {
-          if (result == null)
-            Navigator.popAndPushNamed(context, DashboardPage.id);
-        });
+        if (result == null) Navigator.pop(context);
       });
     } else {
       setState(() {

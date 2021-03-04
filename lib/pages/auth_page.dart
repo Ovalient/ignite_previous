@@ -26,8 +26,9 @@ class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
       print(getUser());
       if (getUser() != null) {
         Navigator.popAndPushNamed(context, DashboardPage.id);
+      } else {
+        Navigator.popAndPushNamed(context, SignInPage.id);
       }
-      Navigator.popAndPushNamed(context, SignInPage.id);
     } else {
       await prefs.setBool('seen', true);
       Navigator.popAndPushNamed(context, IntroPage.id);
