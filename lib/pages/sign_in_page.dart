@@ -31,7 +31,7 @@ class _SignInPageState extends State<SignInPage> {
         if (result == null) {
           print(result);
           setState(() {
-            loginStatus = '로그인 성공';
+            loginStatus = 'You have successfully signed in';
             loginStringColor = Colors.green;
           });
           Navigator.popAndPushNamed(context, DashboardPage.id);

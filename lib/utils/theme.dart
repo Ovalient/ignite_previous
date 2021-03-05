@@ -14,11 +14,19 @@ const MaterialColor mainColors =
   900: const Color(0xFFDA0000),
 });
 
-final basicTheme = ThemeData(
-  fontFamily: 'SCDream',
-  primarySwatch: mainColors,
-  primaryColor: mainColors,
-  accentColor: mainColors[900],
-  backgroundColor: Colors.white,
-  brightness: Brightness.light,
-);
+class MainTheme {
+  static ThemeData get lightTheme {
+    return ThemeData(
+      fontFamily: 'SCDream',
+      primarySwatch: mainColors,
+      primaryColor: mainColors,
+      accentColor: mainColors[900],
+      backgroundColor: Colors.white,
+      brightness: Brightness.light,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedItemColor: Colors.red[900],
+        unselectedItemColor: Colors.red[100],
+      ),
+    );
+  }
+}

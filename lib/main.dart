@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Ignite',
-        theme: basicTheme,
+        theme: MainTheme.lightTheme,
         initialRoute: DashboardPage.id,
         routes: {
           IntroPage.id: (context) => IntroPage(),
