@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Ignite',
         theme: basicTheme,
-        initialRoute: AuthPage.id,
+        initialRoute: DashboardPage.id,
         routes: {
           IntroPage.id: (context) => IntroPage(),
           AuthPage.id: (context) => AuthPage(),

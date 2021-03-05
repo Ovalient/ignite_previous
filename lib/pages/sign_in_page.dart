@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/sign_up_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
-import 'package:ignite/widgets/email_verification_widget.dart';
+import 'package:ignite/widgets/dialogs.dart';
 
 class SignInPage extends StatefulWidget {
   static const String id = "/signInPage";
@@ -31,7 +31,7 @@ class _SignInPageState extends State<SignInPage> {
         if (result == null) {
           print(result);
           setState(() {
-            loginStatus = 'You have successfully signed in';
+            loginStatus = '로그인 성공';
             loginStringColor = Colors.green;
           });
           Navigator.popAndPushNamed(context, DashboardPage.id);

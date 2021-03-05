@@ -90,6 +90,7 @@ Future<String> signUp({String username, String email, String password}) async {
     final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     if (userCredential.user != null) {
+      userCredential.user.sendEmailVerification();
       try {
         await firestore.collection('user').doc(userCredential.user.uid).set({
           'username': username,
@@ -103,19 +104,19 @@ Future<String> signUp({String username, String email, String password}) async {
   } catch (e) {
     switch (e.code) {
       case "email-already-in-use":
-        errorMessage = "Email address already registered";
+        errorMessage = "동일한 이메일이 등록되어 있습니다";
         break;
       case "invalid-email":
-        errorMessage = "Your email address is not valid";
+        errorMessage = "이메일 주소가 유효하지 않습니다";
         break;
       case "operation-not-allowed":
-        errorMessage = "Your email address or password are not enabled";
+        errorMessage = "이메일 주소와 비밀번호를 사용할 수 없습니다";
         break;
       case "weak-password":
-        errorMessage = "Your password is not strong enough";
+        errorMessage = "비밀번호가 안전하지 않습니다";
         break;
       default:
-        errorMessage = "Check your email and password";
+        errorMessage = "이메일 주소와 비밀번호를 확인해주세요";
     }
   }
   return errorMessage;

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:ignite/pages/dashboard_page.dart';
-import 'package:ignite/utils/firebase_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:ignite/utils/firebase_provider.dart';
+import 'package:ignite/widgets/dialogs.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String id = "/signUpPage";
@@ -27,8 +27,41 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isEditingPassword = false;
   bool _isEditingConfirm = false;
 
+  bool _isUsernameExists = true;
+  bool _isEmailExists = true;
+
   String signupStatus;
   Color signupStringColor = Colors.green;
+
+  _checkUsernameExists(String name) async {
+    final firestore = FirebaseFirestore.instance;
+    final result = await firestore
+        .collection('user')
+        .where('username', isEqualTo: name)
+        .limit(1)
+        .get();
+
+    List<QueryDocumentSnapshot> documents = result.docs;
+    if (documents.length > 0)
+      _isUsernameExists = true;
+    else
+      _isUsernameExists = false;
+  }
+
+  _checkEmailExists(String email) async {
+    final firestore = FirebaseFirestore.instance;
+    final result = await firestore
+        .collection('user')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
+
+    List<QueryDocumentSnapshot> documents = result.docs;
+    if (documents.length > 0)
+      _isEmailExists = true;
+    else
+      _isEmailExists = false;
+  }
 
   String _validateUsername(String value) {
     value = value.trim();
@@ -38,6 +71,8 @@ class _SignUpPageState extends State<SignUpPage> {
         return 'Username can\'t be empty';
       } else if (!value.contains(RegExp(r"^[A-Za-z]+$"))) {
         return 'Enter a correct username';
+      } else if (_isUsernameExists) {
+        return 'Username is already exists';
       }
     }
     return null;
@@ -52,6 +87,8 @@ class _SignUpPageState extends State<SignUpPage> {
       } else if (!value.contains(RegExp(
           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-_]+\.[a-zA-Z]+"))) {
         return 'Enter a correct email address';
+      } else if (_isEmailExists) {
+        return 'Email is already exists';
       }
     }
     return null;
@@ -86,20 +123,25 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void signUpRequest() async {
-    if (_usernameController.text != null &&
-        _emailController.text != null &&
-        _passwordController.text != null &&
-        _confirmController.text != null) {
+    if (_validateUsername(_usernameController.text) == null &&
+        _validateEmail(_emailController.text) == null &&
+        _validatePassword(_passwordController.text) == null &&
+        _validateConfirm(_confirmController.text) == null) {
       await signUp(
         username: _usernameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       ).then((result) async {
-        setState(() {
-          signupStatus = 'You have successfully signed up';
-          signupStringColor = Colors.green;
-        });
-        if (result == null) Navigator.pop(context);
+        if (result == null) {
+          setState(() {
+            signupStatus = '계정 생성이 완료되었습니다';
+            signupStringColor = Colors.green;
+          });
+          signUpCompletionDialog(context);
+        } else {
+          signupStatus = result;
+          signupStringColor = Colors.red;
+        }
       });
     } else {
       setState(() {
@@ -173,8 +215,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontSize: 12,
                         color: Colors.redAccent,
                       ),
+                      suffixIcon:
+                          (_validateUsername(_usernameController.text) != null)
+                              ? Icon(Icons.clear, color: Colors.red[900])
+                              : Icon(Icons.check, color: Colors.green),
                     ),
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      await _checkUsernameExists(value);
                       setState(() {
                         _isEditingUsername = true;
                       });
@@ -208,8 +255,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           : null,
                       errorStyle:
                           TextStyle(fontSize: 12, color: Colors.redAccent),
+                      suffixIcon:
+                          (_validateEmail(_emailController.text) != null)
+                              ? Icon(Icons.clear, color: Colors.red[900])
+                              : Icon(Icons.check, color: Colors.green),
                     ),
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      await _checkEmailExists(value);
                       setState(() {
                         _isEditingEmail = true;
                       });
