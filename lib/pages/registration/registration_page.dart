@@ -66,7 +66,7 @@ class _SelectGamePageState extends State<SelectGamePage> {
                     crossAxisCount: 3,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
-                    childAspectRatio: 0.8,
+                    childAspectRatio: 0.7,
                   ),
                   itemBuilder: (context, index) {
                     return snapshot.data.docs[index].data()['imageLink'] == null
@@ -75,26 +75,29 @@ class _SelectGamePageState extends State<SelectGamePage> {
                             onTap: () {
                               print(snapshot.data.docs[index].data()['name']);
                             },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Ink(
-                                  color: Colors.white,
-                                  child: Image.network(
+                            child: Ink(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Image.network(
                                       snapshot.data.docs[index]
                                           .data()['imageLink'],
                                       fit: BoxFit.contain),
-                                ),
-                                SizedBox(height: 4.0),
-                                Expanded(
-                                  child: Text(
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30.0),
+                                      child: Divider()),
+                                  Expanded(
+                                    child: Text(
                                       snapshot.data.docs[index].data()['name'],
                                       textAlign: TextAlign.center,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 10.0)),
-                                ),
-                              ],
+                                      style: TextStyle(fontSize: 10.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
 
