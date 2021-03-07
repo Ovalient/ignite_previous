@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/auth_page.dart';
 import 'package:ignite/pages/intro_page.dart';
+import 'package:ignite/pages/registration/registration_page.dart';
 import 'package:ignite/pages/sign_in_page.dart';
-import 'package:flutter/services.dart';
 import 'package:ignite/pages/sign_up_page.dart';
 import 'package:ignite/utils/theme.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -26,16 +24,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Ignite',
-        theme: MainTheme.lightTheme,
-        initialRoute: DashboardPage.id,
-        routes: {
-          IntroPage.id: (context) => IntroPage(),
-          AuthPage.id: (context) => AuthPage(),
-          SignInPage.id: (context) => SignInPage(),
-          SignUpPage.id: (context) => SignUpPage(),
-          DashboardPage.id: (context) => DashboardPage(),
-        });
+      debugShowCheckedModeBanner: false,
+      title: 'Ignite',
+      theme: MainTheme.lightTheme,
+      initialRoute: AuthPage.id,
+      routes: {
+        IntroPage.id: (context) => IntroPage(),
+        AuthPage.id: (context) => AuthPage(),
+        SignInPage.id: (context) => SignInPage(),
+        SignUpPage.id: (context) => SignUpPage(),
+        DashboardPage.id: (context) => DashboardPage(),
+        SelectGamePage.id: (context) => SelectGamePage(),
+      },
+    );
   }
 }

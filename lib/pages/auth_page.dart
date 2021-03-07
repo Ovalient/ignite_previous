@@ -1,6 +1,5 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/intro_page.dart';
 import 'package:ignite/pages/sign_in_page.dart';
@@ -18,9 +17,11 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _seen = (prefs.getBool('seen') ?? false);
+    bool _seen = (prefs.getBool('first_launch') ?? false);
 
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+    // await FlutterStatusbarcolor.setStatusBarColor(
+    //     Theme.of(context).primaryColor);
+    // FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
 
     if (_seen) {
       print(getUser());
@@ -30,7 +31,7 @@ class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
         Navigator.popAndPushNamed(context, SignInPage.id);
       }
     } else {
-      await prefs.setBool('seen', true);
+      await prefs.setBool('first_launch', true);
       Navigator.popAndPushNamed(context, IntroPage.id);
     }
   }

@@ -18,6 +18,7 @@ class _DashboardPageState extends State<DashboardPage>
     with SingleTickerProviderStateMixin {
   PageController _pageController;
   int _currentIndex = 0;
+
   final List<BottomNavigationBarItem> _navItems = [
     new BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
     new BottomNavigationBarItem(
@@ -40,6 +41,7 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(_navItems[_currentIndex].label)),
       body: SafeArea(
         child: PageView(
           controller: _pageController,
