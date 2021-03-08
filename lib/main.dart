@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
         SignUpPage.id: (context) => SignUpPage(),
         DashboardPage.id: (context) => DashboardPage(),
         SelectGamePage.id: (context) => SelectGamePage(),
+        ProfileSearchPage.id: (context) => ProfileSearchPage(),
       },
     );
   }
