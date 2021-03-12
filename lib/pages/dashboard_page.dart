@@ -40,10 +40,10 @@ class _DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(_navItems[_currentIndex].label)),
-      body: SafeArea(
-        child: PageView(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(_navItems[_currentIndex].label)),
+        body: PageView(
           controller: _pageController,
           children: <Widget>[
             MainPage(),
@@ -57,12 +57,12 @@ class _DashboardPageState extends State<DashboardPage>
             });
           },
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0.0,
-        onTap: onTabNav,
-        currentIndex: _currentIndex,
-        items: _navItems,
+        bottomNavigationBar: BottomNavigationBar(
+          elevation: 0.0,
+          onTap: onTabNav,
+          currentIndex: _currentIndex,
+          items: _navItems,
+        ),
       ),
     );
   }

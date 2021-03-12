@@ -176,22 +176,22 @@ class _SignUpPageState extends State<SignUpPage> {
         statusBarIconBrightness: Brightness.light,
         statusBarColor: Theme.of(context).accentColor,
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Sign Up',
-              style: TextStyle(color: Theme.of(context).accentColor)),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.keyboard_arrow_left,
-                color: Theme.of(context).accentColor),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Sign Up',
+                style: TextStyle(color: Theme.of(context).accentColor)),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.keyboard_arrow_left,
+                  color: Theme.of(context).accentColor),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-        ),
-        body: SafeArea(
-          child: Container(
+          body: Container(
             alignment: Alignment.center,
             margin: EdgeInsets.symmetric(horizontal: 30),
             child: SingleChildScrollView(

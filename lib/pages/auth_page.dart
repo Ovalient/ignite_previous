@@ -41,9 +41,9 @@ class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
           child: CircularProgressIndicator(),
         ),
       ),

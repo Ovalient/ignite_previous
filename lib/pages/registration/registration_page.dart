@@ -39,10 +39,10 @@ class _SelectGamePageState extends State<SelectGamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('새 게임 등록')),
-      body: SafeArea(
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text('새 게임 등록')),
+        body: Center(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 16.0),
             child: StreamBuilder(
@@ -130,51 +130,62 @@ class ProfileSearchPage extends StatefulWidget {
 }
 
 class _ProfileSearchPageState extends State<ProfileSearchPage> {
+  Widget setLayout(String gameName) {
+    switch (gameName) {
+      case 'League of Legends':
+        return Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                  border: new Border(
+                      bottom: new BorderSide(color: Colors.redAccent))),
+              child: TextField(
+                // controller: _usernameController,
+                // focusNode: _usernameFocusNode,
+                decoration: InputDecoration(
+                    fillColor: Colors.redAccent,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    labelText: 'Summoner\'s Name',
+                    icon: Icon(
+                      Icons.person,
+                    ),
+                    // prefix: Icon(icon),
+                    border: InputBorder.none,
+                    // errorText: _isEditingUsername
+                    //     ? _validateUsername(_usernameController.text)
+                    //     : null,
+                    errorStyle: TextStyle(
+                      fontSize: 12,
+                      color: Colors.redAccent,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {},
+                    )),
+                onChanged: (value) {},
+                onSubmitted: (value) {},
+              ),
+            ),
+          ],
+        );
+        break;
+      default:
+        return Center(child: Text(gameName));
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('프로필 검색')),
-      body: SafeArea(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text('프로필 검색')),
+        body: Container(
           alignment: Alignment.center,
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                      border: new Border(
-                          bottom: new BorderSide(color: Colors.redAccent))),
-                  child: TextField(
-                    // controller: _usernameController,
-                    // focusNode: _usernameFocusNode,
-                    decoration: InputDecoration(
-                        fillColor: Colors.redAccent,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: 'Profile Name',
-                        icon: Icon(
-                          Icons.person,
-                        ),
-                        // prefix: Icon(icon),
-                        border: InputBorder.none,
-                        // errorText: _isEditingUsername
-                        //     ? _validateUsername(_usernameController.text)
-                        //     : null,
-                        errorStyle: TextStyle(
-                          fontSize: 12,
-                          color: Colors.redAccent,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {},
-                        )),
-                    onChanged: (value) {},
-                    onSubmitted: (value) {},
-                  ),
-                ),
-              ],
-            ),
+            child: setLayout(widget.gameName),
           ),
         ),
       ),

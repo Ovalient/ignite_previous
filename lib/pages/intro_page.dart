@@ -134,9 +134,9 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: new IntroSlider(
+    return SafeArea(
+      child: Scaffold(
+        body: new IntroSlider(
           // List slides
           // slides: this.slides,
 
