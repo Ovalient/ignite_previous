@@ -10,8 +10,9 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('사람 찾기 페이지'),
+    return Scaffold(
+      appBar: AppBar(title: Text('동료 찾기')),
+      body: Center(child: Text('동료 찾기')),
     );
   }
 }

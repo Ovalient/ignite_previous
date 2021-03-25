@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:ignite/pages/registration/profile_search/league_of_legends.dart';
 
 final firestore = FirebaseFirestore.instance;
 final storage = FirebaseStorage.instance;
@@ -133,42 +134,7 @@ class _ProfileSearchPageState extends State<ProfileSearchPage> {
   Widget setLayout(String gameName) {
     switch (gameName) {
       case 'League of Legends':
-        return Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                  border: new Border(
-                      bottom: new BorderSide(color: Colors.redAccent))),
-              child: TextField(
-                // controller: _usernameController,
-                // focusNode: _usernameFocusNode,
-                decoration: InputDecoration(
-                    fillColor: Colors.redAccent,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    labelText: 'Summoner\'s Name',
-                    icon: Icon(
-                      Icons.person,
-                    ),
-                    // prefix: Icon(icon),
-                    border: InputBorder.none,
-                    // errorText: _isEditingUsername
-                    //     ? _validateUsername(_usernameController.text)
-                    //     : null,
-                    errorStyle: TextStyle(
-                      fontSize: 12,
-                      color: Colors.redAccent,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {},
-                    )),
-                onChanged: (value) {},
-                onSubmitted: (value) {},
-              ),
-            ),
-          ],
-        );
+        return LeagueOfLegendsProfile();
         break;
       default:
         return Center(child: Text(gameName));

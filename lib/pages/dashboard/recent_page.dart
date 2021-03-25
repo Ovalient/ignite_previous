@@ -10,8 +10,9 @@ class RecentPage extends StatefulWidget {
 class _RecentPageState extends State<RecentPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('최근 이력 페이지'),
+    return Scaffold(
+      appBar: AppBar(title: Text('최근 이력')),
+      body: Center(child: Text('최근 이력')),
     );
   }
 }

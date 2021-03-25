@@ -91,6 +91,7 @@ Future<String> signUp({String username, String email, String password}) async {
         email: email, password: password);
     if (userCredential.user != null) {
       userCredential.user.sendEmailVerification();
+      userCredential.user.updateProfile(displayName: username);
       try {
         await firestore.collection('user').doc(userCredential.user.uid).set({
           'username': username,

@@ -46,6 +46,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('메인')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ignite/utils/theme.dart';
 
 import 'dashboard/main_page.dart';
 import 'dashboard/my_page.dart';
@@ -42,7 +41,6 @@ class _DashboardPageState extends State<DashboardPage>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(_navItems[_currentIndex].label)),
         body: PageView(
           controller: _pageController,
           children: <Widget>[
