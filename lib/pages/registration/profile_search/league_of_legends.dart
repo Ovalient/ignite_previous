@@ -11,7 +11,11 @@ class LeagueOfLegendsProfile extends StatefulWidget {
   _LeagueOfLegendsProfileState createState() => _LeagueOfLegendsProfileState();
 }
 
-class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile> {
+class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+  Animation _animation;
+
   TextEditingController _textController;
   FocusNode _textFocusNode;
   bool _isEditingText = false;
@@ -93,54 +97,83 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile> {
     _textController = TextEditingController();
     _textController.text = null;
     _textFocusNode = FocusNode();
+
+    _animationController =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    );
+    _animation.addListener(() => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-              border:
-                  new Border(bottom: new BorderSide(color: Colors.redAccent))),
-          child: TextField(
-            controller: _textController,
-            focusNode: _textFocusNode,
-            autofocus: true,
-            decoration: InputDecoration(
-                fillColor: Colors.redAccent,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                labelText: 'Summoner\'s Name',
-                icon: Icon(
-                  Icons.person,
-                ),
-                border: InputBorder.none,
-                errorText:
-                    _isEditingText ? _validateText(_textController.text) : null,
-                errorStyle: TextStyle(
-                  fontSize: 12,
-                  color: Colors.redAccent,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () async {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                  border: new Border(
+                      bottom: new BorderSide(color: Colors.redAccent))),
+              child: TextField(
+                controller: _textController,
+                focusNode: _textFocusNode,
+                autofocus: true,
+                decoration: InputDecoration(
+                    fillColor: Colors.redAccent,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    labelText: 'Summoner\'s Name',
+                    icon: Icon(
+                      Icons.person,
+                    ),
+                    border: InputBorder.none,
+                    errorText: _isEditingText
+                        ? _validateText(_textController.text)
+                        : null,
+                    errorStyle: TextStyle(
+                      fontSize: 12,
+                      color: Colors.redAccent,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () async {
+                        if (_validateText(_textController.text) == null) {
+                          _animationController.forward();
+                          await getSummonerName(_textController.text);
+                        }
+                      },
+                    )),
+                onChanged: (value) {
+                  setState(() {
+                    _isEditingText = true;
+                  });
+                },
+                onSubmitted: (value) async {
+                  if (_validateText(_textController.text) == null) {
+                    _animationController.forward();
                     await getSummonerName(_textController.text);
-                  },
-                )),
-            onChanged: (value) {
-              setState(() {
-                _isEditingText = true;
-              });
-            },
-            onSubmitted: (value) async {
-              if (_validateText(_textController.text) == null) {
-                await getSummonerName(_textController.text);
-              }
-            },
-          ),
+                  }
+                },
+              ),
+            ),
+            SizeTransition(
+              axisAlignment: 1.0,
+              sizeFactor: _animation,
+              child: Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: FutureBuilder()),
+            )
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -146,15 +146,8 @@ class _ProfileSearchPageState extends State<ProfileSearchPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('프로필 검색')),
-        body: Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.symmetric(horizontal: 30),
-          child: SingleChildScrollView(
-            child: setLayout(widget.gameName),
-          ),
-        ),
-      ),
+          appBar: AppBar(title: Text('프로필 검색')),
+          body: setLayout(widget.gameName)),
     );
   }
 }
