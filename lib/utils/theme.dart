@@ -17,19 +17,20 @@ const MaterialColor mainColors =
 class MainTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-        fontFamily: 'SCDream',
-        brightness: Brightness.light,
-        primarySwatch: mainColors,
-        primaryColor: mainColors,
-        accentColor: mainColors[900],
-        backgroundColor: Colors.white,
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: Colors.red[900],
-          unselectedItemColor: Colors.red[100],
-        ),
-        appBarTheme: AppBarTheme(
-            backgroundColor: mainColors,
-            foregroundColor: mainColors,
-            brightness: Brightness.dark));
+      fontFamily: 'SCDream',
+      brightness: Brightness.light,
+      primarySwatch: mainColors,
+      primaryColor: mainColors,
+      accentColor: mainColors[900],
+      backgroundColor: Colors.white,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedItemColor: Colors.red[900],
+        unselectedItemColor: Colors.red[100],
+      ),
+      appBarTheme: AppBarTheme(
+          backgroundColor: mainColors,
+          foregroundColor: mainColors,
+          brightness: Brightness.dark),
+    );
   }
 }

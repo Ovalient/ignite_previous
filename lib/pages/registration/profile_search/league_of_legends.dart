@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model.dart';
+import 'package:ignite/pages/dashboard/serach_page.dart';
+import 'package:ignite/pages/dashboard_page.dart';
+import 'package:ignite/utils/firebase_provider.dart';
 
 class LeagueOfLegendsProfile extends StatefulWidget {
   LeagueOfLegendsProfile({Key key}) : super(key: key);
@@ -13,6 +17,8 @@ class LeagueOfLegendsProfile extends StatefulWidget {
 
 class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     with SingleTickerProviderStateMixin {
+  final firestore = FirebaseFirestore.instance;
+
   AnimationController _animationController;
   Animation _animation;
 
@@ -20,16 +26,22 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
   FocusNode _textFocusNode;
   bool _isEditingText = false;
 
+  Summoner summoner;
+  bool _searching = false;
+
   final headers = {
     'User-Agent':
         'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36',
     'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
     'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Origin': 'https://developer.riotgames.com',
-    'X-Riot-Token': 'RGAPI-c89a98a2-c755-4d2d-a5ce-c6a3f6b216a9',
+    'X-Riot-Token': 'RGAPI-2bbfcccc-53ea-4a81-b598-25c7f36f669e',
   };
 
-  getSummonerName(String summonerName) async {
+  Future<Summoner> getSummonerName(String summonerName) async {
+    setState(() {
+      _searching = true;
+    });
     final url =
         'https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/' +
             summonerName;
@@ -39,13 +51,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> summonerData = jsonDecode(response.body);
-      await getSummonerData(summonerData);
+      return await getSummonerData(summonerData);
     } else {
-      throw Exception('No data found');
+      return null;
     }
   }
 
-  getSummonerData(Map<String, dynamic> summonerData) async {
+  Future<Summoner> getSummonerData(Map<String, dynamic> summonerData) async {
     final url =
         'https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/' +
             summonerData['id'];
@@ -54,11 +66,11 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
       headers: headers,
     );
     if (response.statusCode == 200) {
-      Summoner summoner;
       final List<dynamic> leagueData = jsonDecode(response.body);
       leagueData.forEach((element) {
         if (element['queueType'] == 'RANKED_SOLO_5x5') {
           summoner = Summoner(
+            id: summonerData['id'],
             name: summonerData['name'],
             profileIconId: summonerData['profileIconId'],
             summonerLevel: summonerData['summonerLevel'],
@@ -73,10 +85,10 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
             summonerLevel: summonerData['summonerLevel'],
           );
         }
-        return summoner;
       });
+      return summoner;
     } else {
-      throw Exception('No data found');
+      return null;
     }
   }
 
@@ -91,13 +103,43 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     return null;
   }
 
+  addSummonerData() async {
+    await firestore
+        .collection('user')
+        .doc(getUser().uid)
+        .collection('League of Legends')
+        .add({
+      'accountId': summoner.id,
+    }).then((value) async {
+      Navigator.pop(context);
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('등록 완료!'),
+              content: Text('소환사 정보가 계정에 추가되었습니다.\n수정이나 삭제는 \'내 정보\'에서 가능합니다.'),
+              actions: [
+                MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DashboardPage(index: 1),
+                      ),
+                    );
+                  },
+                  child: Text('확인'),
+                ),
+              ],
+            );
+          });
+    });
+  }
+
   @override
   void initState() {
-    super.initState();
-    _textController = TextEditingController();
-    _textController.text = null;
-    _textFocusNode = FocusNode();
-
     _animationController =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _animation = CurvedAnimation(
@@ -105,6 +147,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
       curve: Curves.fastOutSlowIn,
     );
     _animation.addListener(() => setState(() {}));
+
+    super.initState();
+    _textController = TextEditingController();
+    _textController.text = null;
+    _textFocusNode = FocusNode();
+
+    summoner = null;
   }
 
   @override
@@ -145,8 +194,14 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                       icon: Icon(Icons.search),
                       onPressed: () async {
                         if (_validateText(_textController.text) == null) {
+                          summoner =
+                              await getSummonerName(_textController.text);
+                          setState(() {
+                            _searching = false;
+                          });
                           _animationController.forward();
-                          await getSummonerName(_textController.text);
+                          print(
+                              'PLAYER NAME =========================\n${summoner.name}');
                         }
                       },
                     )),
@@ -157,8 +212,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                 },
                 onSubmitted: (value) async {
                   if (_validateText(_textController.text) == null) {
+                    summoner = await getSummonerName(_textController.text);
+                    setState(() {
+                      _searching = false;
+                    });
                     _animationController.forward();
-                    await getSummonerName(_textController.text);
+                    print(
+                        'PLAYER NAME =========================\n${summoner.name}');
                   }
                 },
               ),
@@ -166,11 +226,126 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
             SizeTransition(
               axisAlignment: 1.0,
               sizeFactor: _animation,
-              child: Container(
+              child: AnimatedOpacity(
+                opacity: _searching ? 0.0 : 1.0,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInQuint,
+                child: Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: FutureBuilder()),
-            )
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: summoner == null
+                      ? Text('소환사 정보가 없습니다.')
+                      : Card(
+                          child: InkWell(
+                            onTap: () async {
+                              await showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('이 계정이 맞나요?'),
+                                    content: ListTile(
+                                      leading: CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              'https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png'),
+                                          child: Text(
+                                              '${summoner.summonerLevel}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12))),
+                                      title: Text(summoner.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      subtitle: summoner.soloTier != null &&
+                                              summoner.soloRank != null
+                                          ? Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                      text:
+                                                          '${summoner.soloTier} ${summoner.soloRank}',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                  TextSpan(text: ' | '),
+                                                  TextSpan(
+                                                      text:
+                                                          '${summoner.leaguePoints}LP',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                ],
+                                              ),
+                                            )
+                                          : Text('UNRANKED',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                    ),
+                                    actions: [
+                                      MaterialButton(
+                                        onPressed: () async {
+                                          print(
+                                              '------------------------------------------');
+                                          print(summoner.id);
+                                          print(summoner.name);
+                                          print(
+                                              '------------------------------------------');
+                                          await addSummonerData();
+                                        },
+                                        child: Text('네'),
+                                      ),
+                                      MaterialButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('아니요'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      'https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png'),
+                                  child: Text('${summoner.summonerLevel}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12))),
+                              title: Text(summoner.name,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              subtitle: summoner.soloTier != null &&
+                                      summoner.soloRank != null
+                                  ? Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                              text:
+                                                  '${summoner.soloTier} ${summoner.soloRank}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                          TextSpan(text: ' | '),
+                                          TextSpan(
+                                              text:
+                                                  '${summoner.leaguePoints}LP',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    )
+                                  : Text('UNRANKED',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                              trailing: Icon(Icons.keyboard_arrow_right),
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

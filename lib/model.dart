@@ -1,4 +1,5 @@
 class Summoner {
+  String id;
   String name;
   int profileIconId;
   int summonerLevel;
@@ -7,7 +8,8 @@ class Summoner {
   int leaguePoints;
 
   Summoner(
-      {this.name,
+      {this.id,
+      this.name,
       this.profileIconId,
       this.summonerLevel,
       this.soloTier,

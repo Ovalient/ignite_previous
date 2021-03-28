@@ -7,7 +7,8 @@ import 'dashboard/serach_page.dart';
 
 class DashboardPage extends StatefulWidget {
   static const String id = "/dashboardPage";
-  DashboardPage({Key key}) : super(key: key);
+  final int index;
+  DashboardPage({Key key, this.index}) : super(key: key);
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -16,7 +17,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage>
     with SingleTickerProviderStateMixin {
   PageController _pageController;
-  int _currentIndex = 0;
+  int _currentIndex;
 
   final List<BottomNavigationBarItem> _navItems = [
     new BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
@@ -34,6 +35,7 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.index ?? 0;
     _pageController = PageController(initialPage: _currentIndex);
   }
 
