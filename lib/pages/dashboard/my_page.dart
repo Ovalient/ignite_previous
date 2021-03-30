@@ -17,22 +17,23 @@ class _MyPageState extends State<MyPage> {
       body: Center(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 30),
-          child: MaterialButton(
-            elevation: 0,
-            minWidth: double.maxFinite,
-            height: 50,
-            onPressed: () async {
-              await signOut().then((result) {
-                Navigator.popAndPushNamed(context, SignInPage.id);
-              }).catchError((error) {
-                print('Sign Out Error: $error');
-              });
-            },
-            color: Theme.of(context).accentColor,
-            child: Text('Sign Out',
-                style: TextStyle(color: Colors.white, fontSize: 16)),
-            textColor: Colors.white,
-          ),
+          child: ListView()
+          // child: MaterialButton(
+          //   elevation: 0,
+          //   minWidth: double.maxFinite,
+          //   height: 50,
+          //   onPressed: () async {
+          //     await signOut().then((result) {
+          //       Navigator.popAndPushNamed(context, SignInPage.id);
+          //     }).catchError((error) {
+          //       print('Sign Out Error: $error');
+          //     });
+          //   },
+          //   color: Theme.of(context).accentColor,
+          //   child: Text('Sign Out',
+          //       style: TextStyle(color: Colors.white, fontSize: 16)),
+          //   textColor: Colors.white,
+          // ),
         ),
       ),
     );

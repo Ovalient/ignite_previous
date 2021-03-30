@@ -5,7 +5,10 @@ class Summoner {
   int summonerLevel;
   String soloTier;
   String soloRank;
-  int leaguePoints;
+  int soloLeaguePoints;
+  String flexTier;
+  String flexRank;
+  int flexLeaguePoints;
 
   Summoner(
       {this.id,
@@ -14,5 +17,13 @@ class Summoner {
       this.summonerLevel,
       this.soloTier,
       this.soloRank,
-      this.leaguePoints});
+      this.soloLeaguePoints,
+      this.flexTier,
+      this.flexRank,
+      this.flexLeaguePoints});
+
+  @override
+  String toString() {
+    return 'SUMMONER INFO:\n[id: $id\nname: $name\nprofileIconId: $profileIconId\nsummonerLevel: $summonerLevel\nsoloTier: $soloTier\nsoloRank: $soloRank\nsoloLeaguePoints: $soloLeaguePoints\nflexTier: $flexTier\nflexRank: $flexRank\nflexLeaguePoints: $flexLeaguePoints]';
+  }
 }
