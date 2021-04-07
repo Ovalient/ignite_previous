@@ -20,11 +20,11 @@ class _DashboardPageState extends State<DashboardPage>
   int _currentIndex;
 
   final List<BottomNavigationBarItem> _navItems = [
-    new BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
+    new BottomNavigationBarItem(icon: Icon(Icons.home), label: "메인"),
     new BottomNavigationBarItem(
-        icon: Icon(Icons.person_search), label: '동료 찾기'),
-    new BottomNavigationBarItem(icon: Icon(Icons.access_time), label: '최근 이력'),
-    new BottomNavigationBarItem(icon: Icon(Icons.person_pin), label: '내 정보'),
+        icon: Icon(Icons.person_search), label: "동료 찾기"),
+    new BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "최근 이력"),
+    new BottomNavigationBarItem(icon: Icon(Icons.person_pin), label: "내 정보"),
   ];
 
   void onTabNav(int index) {

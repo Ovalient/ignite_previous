@@ -11,8 +11,8 @@ class _RecentPageState extends State<RecentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('최근 이력')),
-      body: Center(child: Text('최근 이력')),
+      appBar: AppBar(title: Text("최근 이력")),
+      body: Center(child: Text("최근 이력")),
     );
   }
 }

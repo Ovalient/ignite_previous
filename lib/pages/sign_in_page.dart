@@ -32,11 +32,11 @@ class _SignInPageState extends State<SignInPage> {
         if (result == null) {
           print(result);
           setState(() {
-            loginStatus = 'You have successfully signed in';
+            loginStatus = "You have successfully signed in";
             loginStringColor = Colors.green;
           });
           Navigator.popAndPushNamed(context, DashboardPage.id);
-        } else if (result == '이메일 주소 인증이 필요합니다') {
+        } else if (result == "이메일 주소 인증이 필요합니다") {
           setState(() {
             loginStatus = result;
             loginStringColor = Colors.green;
@@ -51,7 +51,7 @@ class _SignInPageState extends State<SignInPage> {
       });
     } else {
       setState(() {
-        loginStatus = 'Please enter email & password';
+        loginStatus = "Please enter email & password";
         loginStringColor = Colors.red;
       });
     }
@@ -105,26 +105,26 @@ class _SignInPageState extends State<SignInPage> {
                         TextSpan(
                           children: <TextSpan>[
                             TextSpan(
-                                text: 'PLAY',
+                                text: "PLAY",
                                 style: TextStyle(
-                                    fontFamily: 'BarlowSemiCondensed',
+                                    fontFamily: "BarlowSemiCondensed",
                                     fontSize: 54.0)),
                             TextSpan(
-                                text: '.\n',
+                                text: ".\n",
                                 style: TextStyle(
                                     color: Colors.redAccent,
-                                    fontFamily: 'BarlowSemiCondensed',
+                                    fontFamily: "BarlowSemiCondensed",
                                     fontSize: 54.0)),
                             TextSpan(
-                                text: 'TOGETHER',
+                                text: "TOGETHER",
                                 style: TextStyle(
-                                    fontFamily: 'BarlowSemiCondensed',
+                                    fontFamily: "BarlowSemiCondensed",
                                     fontSize: 54.0)),
                             TextSpan(
-                                text: '.',
+                                text: ".",
                                 style: TextStyle(
                                     color: Colors.redAccent,
-                                    fontFamily: 'BarlowSemiCondensed',
+                                    fontFamily: "BarlowSemiCondensed",
                                     fontSize: 54.0)),
                           ],
                         ),
@@ -158,7 +158,7 @@ class _SignInPageState extends State<SignInPage> {
                               fillColor: Colors.redAccent,
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
-                              labelText: 'Email',
+                              labelText: "Email",
                               icon: Icon(
                                 Icons.email,
                               ),
@@ -186,7 +186,7 @@ class _SignInPageState extends State<SignInPage> {
                               fillColor: Colors.redAccent,
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
-                              labelText: 'Password',
+                              labelText: "Password",
                               icon: Icon(
                                 Icons.lock,
                               ),
@@ -218,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
                           signInRequest();
                         },
                         color: Theme.of(context).accentColor,
-                        child: Text('Sign In',
+                        child: Text("Sign In",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),
                         textColor: Colors.white,
@@ -236,7 +236,7 @@ class _SignInPageState extends State<SignInPage> {
                             Navigator.push(context, _createRoute());
                           },
                           color: Colors.white,
-                          child: Text('Sign Up',
+                          child: Text("Sign Up",
                               style: TextStyle(
                                   color: Theme.of(context).accentColor,
                                   fontSize: 16)),

@@ -17,7 +17,7 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _seen = (prefs.getBool('first_launch') ?? false);
+    bool _seen = (prefs.getBool("first_launch") ?? false);
 
     // await FlutterStatusbarcolor.setStatusBarColor(
     //     Theme.of(context).primaryColor);
@@ -31,7 +31,7 @@ class _AuthPageState extends State<AuthPage> with AfterLayoutMixin<AuthPage> {
         Navigator.popAndPushNamed(context, SignInPage.id);
       }
     } else {
-      await prefs.setBool('first_launch', true);
+      await prefs.setBool("first_launch", true);
       Navigator.popAndPushNamed(context, IntroPage.id);
     }
   }

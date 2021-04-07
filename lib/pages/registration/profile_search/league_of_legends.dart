@@ -43,7 +43,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
       _searching = true;
     });
     final url =
-        'https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/' +
+        "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" +
             summonerName;
     final response = await http.get(
       Uri.parse(url),
@@ -59,7 +59,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
 
   Future<Summoner> getSummonerData(Map<String, dynamic> summonerData) async {
     final url =
-        'https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/' +
+        "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" +
             summonerData['id'];
     final response = await http.get(
       Uri.parse(url),
@@ -70,45 +70,45 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
       final List<dynamic> leagueData = jsonDecode(response.body);
       if (leagueData.isEmpty) {
         summoner = Summoner(
-          id: summonerData['id'],
-          name: summonerData['name'],
-          profileIconId: summonerData['profileIconId'],
-          summonerLevel: summonerData['summonerLevel'],
+          id: summonerData["id"],
+          name: summonerData["name"],
+          profileIconId: summonerData["profileIconId"],
+          summonerLevel: summonerData["summonerLevel"],
         );
       } else {
-        if (leagueData[0]['queueType'] == 'RANKED_SOLO_5x5') {
+        if (leagueData[0]["queueType"] == "RANKED_SOLO_5x5") {
           if (leagueData.length > 1) {
             summoner = Summoner(
-              id: summonerData['id'],
-              name: summonerData['name'],
-              profileIconId: summonerData['profileIconId'],
-              summonerLevel: summonerData['summonerLevel'],
-              soloTier: leagueData[0]['tier'],
-              soloRank: leagueData[0]['rank'],
-              soloLeaguePoints: leagueData[0]['leaguePoints'],
-              flexTier: leagueData[1]['tier'],
-              flexRank: leagueData[1]['rank'],
-              flexLeaguePoints: leagueData[1]['leaguePoints'],
+              id: summonerData["id"],
+              name: summonerData["name"],
+              profileIconId: summonerData["profileIconId"],
+              summonerLevel: summonerData["summonerLevel"],
+              soloTier: leagueData[0]["tier"],
+              soloRank: leagueData[0]["rank"],
+              soloLeaguePoints: leagueData[0]["leaguePoints"],
+              flexTier: leagueData[1]["tier"],
+              flexRank: leagueData[1]["rank"],
+              flexLeaguePoints: leagueData[1]["leaguePoints"],
             );
           } else {
             summoner = Summoner(
-                id: summonerData['id'],
-                name: summonerData['name'],
-                profileIconId: summonerData['profileIconId'],
-                summonerLevel: summonerData['summonerLevel'],
-                soloTier: leagueData[0]['tier'],
-                soloRank: leagueData[0]['rank'],
-                soloLeaguePoints: leagueData[0]['leaguePoints']);
+                id: summonerData["id"],
+                name: summonerData["name"],
+                profileIconId: summonerData["profileIconId"],
+                summonerLevel: summonerData["summonerLevel"],
+                soloTier: leagueData[0]["tier"],
+                soloRank: leagueData[0]["rank"],
+                soloLeaguePoints: leagueData[0]["leaguePoints"]);
           }
-        } else if (leagueData[0]['queueType'] == 'RANKED_FLEX_SR') {
+        } else if (leagueData[0]["queueType"] == "RANKED_FLEX_SR") {
           summoner = Summoner(
-            id: summonerData['id'],
-            name: summonerData['name'],
-            profileIconId: summonerData['profileIconId'],
-            summonerLevel: summonerData['summonerLevel'],
-            flexTier: leagueData[0]['tier'],
-            flexRank: leagueData[0]['rank'],
-            flexLeaguePoints: leagueData[0]['leaguePoints'],
+            id: summonerData["id"],
+            name: summonerData["name"],
+            profileIconId: summonerData["profileIconId"],
+            summonerLevel: summonerData["summonerLevel"],
+            flexTier: leagueData[0]["tier"],
+            flexRank: leagueData[0]["rank"],
+            flexLeaguePoints: leagueData[0]["leaguePoints"],
           );
         }
       }
@@ -123,7 +123,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
 
     if (value != null) {
       if (value.isEmpty) {
-        return 'Username can\'t be empty';
+        return "Username can\'t be empty";
       }
     }
     return null;
@@ -131,9 +131,9 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
 
   addSummonerData() async {
     await firestore
-        .collection('user')
+        .collection("user")
         .doc(getUser().uid)
-        .collection('League of Legends')
+        .collection("League of Legends")
         .get()
         .then((value) async {
       if (value.docs.isNotEmpty) {
@@ -144,26 +144,25 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
             builder: (BuildContext context) {
               var docId = value.docs.single.id;
               return AlertDialog(
-                title: Text('어라?'),
-                content:
-                    Text('이미 소환사 정보가 등록되어 있습니다.\n\'네\'를 누르면 기존 정보를 덮어씌웁니다.'),
+                title: Text("어라?"),
+                content: Text("이미 소환사 정보가 등록되어 있습니다\n\'네\'를 누르면 기존 정보를 덮어씌웁니다"),
                 actions: [
                   MaterialButton(
                     onPressed: () async {
                       await firestore
-                          .collection('user')
+                          .collection("user")
                           .doc(getUser().uid)
-                          .collection('League of Legends')
+                          .collection("League of Legends")
                           .doc(docId)
                           .delete();
 
                       await firestore
-                          .collection('user')
+                          .collection("user")
                           .doc(getUser().uid)
-                          .collection('League of Legends')
+                          .collection("League of Legends")
                           .add({
-                        'accountId': summoner.id,
-                        'name': summoner.name,
+                        "accountId": summoner.id,
+                        "name": summoner.name,
                       }).then((value) async {
                         Navigator.pop(context);
                         await showDialog(
@@ -171,9 +170,9 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('등록 완료!'),
+                                title: Text("등록 완료!"),
                                 content: Text(
-                                    '소환사 정보가 계정에 추가되었습니다.\n수정이나 삭제는 \'내 정보\'에서 가능합니다.'),
+                                    "소환사 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
                                 actions: [
                                   MaterialButton(
                                     onPressed: () {
@@ -186,7 +185,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                         ),
                                       );
                                     },
-                                    child: Text('확인'),
+                                    child: Text("확인"),
                                   ),
                                 ],
                               );
@@ -194,13 +193,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                       });
                       Navigator.pop(context);
                     },
-                    child: Text('네'),
+                    child: Text("네"),
                   ),
                   MaterialButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('아니오'),
+                    child: Text("아니오"),
                   ),
                 ],
               );
@@ -208,12 +207,12 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
       }
       if (value.docs.isEmpty) {
         await firestore
-            .collection('user')
+            .collection("user")
             .doc(getUser().uid)
-            .collection('League of Legends')
+            .collection("League of Legends")
             .add({
-          'accountId': summoner.id,
-          'name': summoner.name,
+          "accountId": summoner.id,
+          "name": summoner.name,
         }).then((value) async {
           Navigator.pop(context);
           await showDialog(
@@ -221,9 +220,9 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('등록 완료!'),
+                  title: Text("등록 완료!"),
                   content:
-                      Text('소환사 정보가 계정에 추가되었습니다.\n수정이나 삭제는 \'내 정보\'에서 가능합니다.'),
+                      Text("소환사 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
                   actions: [
                     MaterialButton(
                       onPressed: () {
@@ -233,7 +232,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                             MaterialPageRoute(
                                 builder: (context) => DashboardPage(index: 1)));
                       },
-                      child: Text('확인'),
+                      child: Text("확인"),
                     ),
                   ],
                 );
@@ -281,7 +280,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                   decoration: InputDecoration(
                       fillColor: Colors.redAccent,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      labelText: 'Summoner\'s Name',
+                      labelText: "Summoner\'s Name",
                       icon: Icon(
                         Icons.person,
                       ),
@@ -335,7 +334,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                   height: MediaQuery.of(context).size.height * 0.8,
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: summoner == null
-                      ? Text('소환사 정보가 없습니다.')
+                      ? Text("소환사 정보가 없습니다")
                       : Card(
                           child: InkWell(
                             onTap: () async {
@@ -344,13 +343,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                   barrierDismissible: false,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('이 계정이 맞나요?'),
+                                      title: Text("이 계정이 맞나요?"),
                                       content: ListTile(
                                         leading: CircleAvatar(
                                             backgroundImage: NetworkImage(
-                                                'https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png'),
+                                                "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png"),
                                             child: Text(
-                                                '${summoner.summonerLevel}',
+                                                "${summoner.summonerLevel}",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 12))),
@@ -364,15 +363,15 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                                   children: [
                                                     TextSpan(
                                                         text:
-                                                            '${summoner.soloTier} ${summoner.soloRank}',
+                                                            "${summoner.soloTier} ${summoner.soloRank}",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
-                                                    TextSpan(text: ' | '),
+                                                    TextSpan(text: " | "),
                                                     TextSpan(
                                                         text:
-                                                            '${summoner.soloLeaguePoints}LP',
+                                                            "${summoner.soloLeaguePoints}LP",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight
@@ -380,7 +379,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                                   ],
                                                 ),
                                               )
-                                            : Text('UNRANKED',
+                                            : Text("UNRANKED",
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.w500)),
@@ -390,13 +389,13 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                           onPressed: () async {
                                             await addSummonerData();
                                           },
-                                          child: Text('네'),
+                                          child: Text("네"),
                                         ),
                                         MaterialButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('아니요'),
+                                          child: Text("아니요"),
                                         ),
                                       ],
                                     );
@@ -405,7 +404,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                             child: ListTile(
                               leading: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      'https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png'),
+                                      "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png"),
                                   child: Text('${summoner.summonerLevel}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -420,19 +419,19 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                         children: [
                                           TextSpan(
                                               text:
-                                                  '${summoner.soloTier} ${summoner.soloRank}',
+                                                  "${summoner.soloTier} ${summoner.soloRank}",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500)),
                                           TextSpan(text: ' | '),
                                           TextSpan(
                                               text:
-                                                  '${summoner.soloLeaguePoints}LP',
+                                                  "${summoner.soloLeaguePoints}LP",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500)),
                                         ],
                                       ),
                                     )
-                                  : Text('UNRANKED',
+                                  : Text("UNRANKED",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500)),
                               trailing: Icon(Icons.keyboard_arrow_right),

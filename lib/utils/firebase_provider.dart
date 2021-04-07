@@ -93,9 +93,9 @@ Future<String> signUp({String username, String email, String password}) async {
       userCredential.user.sendEmailVerification();
       userCredential.user.updateProfile(displayName: username);
       try {
-        await firestore.collection('user').doc(userCredential.user.uid).set({
-          'username': username,
-          'email': email,
+        await firestore.collection("user").doc(userCredential.user.uid).set({
+          "username": username,
+          "email": email,
         });
       } on FirebaseException catch (e) {
         // e.g, e.code == 'canceled'

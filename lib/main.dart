@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/pages/auth_page.dart';
 import 'package:ignite/pages/intro_page.dart';
+import 'package:ignite/pages/my_pages/my_info_page.dart';
 import 'package:ignite/pages/registration/registration_page.dart';
 import 'package:ignite/pages/sign_in_page.dart';
 import 'package:ignite/pages/sign_up_page.dart';
@@ -25,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Ignite',
+      title: "Ignite",
       theme: MainTheme.lightTheme,
       initialRoute: AuthPage.id,
       routes: {
@@ -34,8 +35,9 @@ class _MyAppState extends State<MyApp> {
         SignInPage.id: (context) => SignInPage(),
         SignUpPage.id: (context) => SignUpPage(),
         DashboardPage.id: (context) => DashboardPage(),
-        SelectGamePage.id: (context) => SelectGamePage(),
+        RegistrationPage.id: (context) => RegistrationPage(),
         ProfileSearchPage.id: (context) => ProfileSearchPage(),
+        MyInfoPage.id: (context) => MyInfoPage(),
       },
     );
   }

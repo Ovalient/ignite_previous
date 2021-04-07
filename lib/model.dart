@@ -24,6 +24,6 @@ class Summoner {
 
   @override
   String toString() {
-    return 'SUMMONER INFO:\n[id: $id\nname: $name\nprofileIconId: $profileIconId\nsummonerLevel: $summonerLevel\nsoloTier: $soloTier\nsoloRank: $soloRank\nsoloLeaguePoints: $soloLeaguePoints\nflexTier: $flexTier\nflexRank: $flexRank\nflexLeaguePoints: $flexLeaguePoints]';
+    return "SUMMONER INFO:\n[id: $id\nname: $name\nprofileIconId: $profileIconId\nsummonerLevel: $summonerLevel\nsoloTier: $soloTier\nsoloRank: $soloRank\nsoloLeaguePoints: $soloLeaguePoints\nflexTier: $flexTier\nflexRank: $flexRank\nflexLeaguePoints: $flexLeaguePoints]";
   }
 }

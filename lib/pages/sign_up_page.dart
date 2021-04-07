@@ -37,8 +37,8 @@ class _SignUpPageState extends State<SignUpPage> {
   _checkUsernameExists(String name) async {
     final firestore = FirebaseFirestore.instance;
     final result = await firestore
-        .collection('user')
-        .where('username', isEqualTo: name)
+        .collection("user")
+        .where("username", isEqualTo: name)
         .limit(1)
         .get();
 
@@ -52,8 +52,8 @@ class _SignUpPageState extends State<SignUpPage> {
   _checkEmailExists(String email) async {
     final firestore = FirebaseFirestore.instance;
     final result = await firestore
-        .collection('user')
-        .where('email', isEqualTo: email)
+        .collection("user")
+        .where("email", isEqualTo: email)
         .limit(1)
         .get();
 
@@ -69,11 +69,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (value != null) {
       if (value.isEmpty) {
-        return 'Username can\'t be empty';
+        return "Username can\'t be empty";
       } else if (!value.contains(RegExp(r"^[A-Za-z]+$"))) {
-        return 'Enter a correct username';
+        return "Enter a correct username";
       } else if (_isUsernameExists) {
-        return 'Username is already exists';
+        return "Username is already exists";
       }
     }
     return null;
@@ -84,12 +84,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (value != null) {
       if (value.isEmpty) {
-        return 'Email can\'t be empty';
+        return "Email can\'t be empty";
       } else if (!value.contains(RegExp(
           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-_]+\.[a-zA-Z]+"))) {
-        return 'Enter a correct email address';
+        return "Enter a correct email address";
       } else if (_isEmailExists) {
-        return 'Email is already exists';
+        return "Email is already exists";
       }
     }
     return null;
@@ -100,9 +100,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (value != null) {
       if (value.isEmpty) {
-        return 'Password can\'t be empty';
+        return "Password can\'t be empty";
       } else if (value.length < 6) {
-        return 'Length of password should be greater than 6';
+        return "Length of password should be greater than 6";
       }
     }
     return null;
@@ -113,11 +113,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (value != null) {
       if (value.isEmpty) {
-        return 'Password can\'t be empty';
+        return "Password can\'t be empty";
       } else if (value.length < 6) {
-        return 'Length of password should be greater than 6';
+        return "Length of password should be greater than 6";
       } else if (value != _passwordController.text.trim()) {
-        return 'Password is not matched';
+        return "Password is not matched";
       }
     }
     return null;
@@ -135,7 +135,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ).then((result) async {
         if (result == null) {
           setState(() {
-            signupStatus = '계정 생성이 완료되었습니다';
+            signupStatus = "계정 생성이 완료되었습니다";
             signupStringColor = Colors.green;
           });
           signUpCompletionDialog(context);
@@ -146,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
       });
     } else {
       setState(() {
-        signupStatus = 'Please enter every text field';
+        signupStatus = "Please enter every text field";
         signupStringColor = Colors.red;
       });
     }
@@ -179,7 +179,7 @@ class _SignUpPageState extends State<SignUpPage> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Sign Up',
+            title: Text("Sign Up",
                 style: TextStyle(color: Theme.of(context).accentColor)),
             leading: IconButton(
               onPressed: () {
@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.redAccent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: 'Username',
+                        labelText: "Username",
                         icon: Icon(
                           Icons.person,
                         ),
@@ -251,7 +251,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.redAccent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: 'Email',
+                        labelText: "Email",
                         icon: Icon(
                           Icons.email,
                         ),
@@ -291,7 +291,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         decoration: InputDecoration(
                           fillColor: Colors.redAccent,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                          labelText: 'Password',
+                          labelText: "Password",
                           icon: Icon(
                             Icons.lock,
                           ),
@@ -326,7 +326,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         decoration: InputDecoration(
                           fillColor: Colors.redAccent,
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                          labelText: 'Confirm Password',
+                          labelText: "Confirm Password",
                           icon: Icon(
                             Icons.lock,
                           ),
@@ -378,7 +378,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         : null,
                     color: Theme.of(context).accentColor,
                     disabledColor: Colors.grey[350],
-                    child: Text('Sign Up',
+                    child: Text("Sign Up",
                         style: TextStyle(color: Colors.white, fontSize: 16)),
                     textColor: Colors.white,
                   ),

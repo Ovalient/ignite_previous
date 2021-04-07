@@ -24,15 +24,15 @@ Route _createRoute(Widget page) {
   );
 }
 
-class SelectGamePage extends StatefulWidget {
-  static const String id = "/dashboardPage/selectGamePage";
-  SelectGamePage({Key key}) : super(key: key);
+class RegistrationPage extends StatefulWidget {
+  static const String id = "/dashboardPage/registerGamePage";
+  RegistrationPage({Key key}) : super(key: key);
 
   @override
-  _SelectGamePageState createState() => _SelectGamePageState();
+  _RegistrationPageState createState() => _RegistrationPageState();
 }
 
-class _SelectGamePageState extends State<SelectGamePage> {
+class _RegistrationPageState extends State<RegistrationPage> {
   @override
   void initState() {
     super.initState();
@@ -133,7 +133,7 @@ class ProfileSearchPage extends StatefulWidget {
 class _ProfileSearchPageState extends State<ProfileSearchPage> {
   Widget setLayout(String gameName) {
     switch (gameName) {
-      case 'League of Legends':
+      case "League of Legends":
         return LeagueOfLegendsProfile();
         break;
       default:
@@ -146,7 +146,7 @@ class _ProfileSearchPageState extends State<ProfileSearchPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(title: Text('프로필 검색')),
+          appBar: AppBar(title: Text("프로필 검색")),
           body: setLayout(widget.gameName)),
     );
   }

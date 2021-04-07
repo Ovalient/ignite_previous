@@ -11,8 +11,8 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('동료 찾기')),
-      body: Center(child: Text('동료 찾기')),
+      appBar: AppBar(title: Text("동료 찾기")),
+      body: Center(child: Text("동료 찾기")),
     );
   }
 }
