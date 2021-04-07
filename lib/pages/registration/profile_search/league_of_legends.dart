@@ -35,7 +35,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
     'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Origin': 'https://developer.riotgames.com',
-    'X-Riot-Token': 'RGAPI-15b1f4fa-25a9-427d-93e7-22a2e5d54f0f',
+    'X-Riot-Token': 'RGAPI-7fb26a98-5026-425c-91bc-bf1499676e17',
   };
 
   Future<Summoner> getSummonerName(String summonerName) async {

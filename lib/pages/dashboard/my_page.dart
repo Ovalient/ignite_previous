@@ -16,24 +16,28 @@ class _MyPageState extends State<MyPage> {
       appBar: AppBar(title: Text('내 정보')),
       body: Center(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 30),
-          child: ListView()
-          // child: MaterialButton(
-          //   elevation: 0,
-          //   minWidth: double.maxFinite,
-          //   height: 50,
-          //   onPressed: () async {
-          //     await signOut().then((result) {
-          //       Navigator.popAndPushNamed(context, SignInPage.id);
-          //     }).catchError((error) {
-          //       print('Sign Out Error: $error');
-          //     });
-          //   },
-          //   color: Theme.of(context).accentColor,
-          //   child: Text('Sign Out',
-          //       style: TextStyle(color: Colors.white, fontSize: 16)),
-          //   textColor: Colors.white,
-          // ),
+          child: ListView(
+            children: [
+              InkWell(onTap: () {}, child: ListTile(title: Text('내 정보'))),
+              InkWell(onTap: () {}, child: ListTile(title: Text('공지사항'))),
+              Divider(height: 8.0, thickness: 8.0),
+              InkWell(
+                  onTap: () {},
+                  child: ListTile(
+                    title: Text('연결된 계정'),
+                    subtitle: Text('현재 연동된 게임 계정을 수정하거나 삭제합니다.'),
+                  )),
+              Divider(height: 8.0, thickness: 8.0),
+              InkWell(
+                  onTap: () {},
+                  child: ListTile(
+                    title: Text('회원 탈퇴',
+                        style: TextStyle(
+                            color: Colors.red[900],
+                            fontWeight: FontWeight.bold)),
+                  )),
+            ],
+          ),
         ),
       ),
     );
