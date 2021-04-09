@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:ignite/pages/registration/profile_search/league_of_legends.dart';
+import 'package:ignite/pages/registration/profile_search/lol.dart';
+import 'package:ignite/pages/registration/profile_search/pubg.dart';
 
 final firestore = FirebaseFirestore.instance;
 final storage = FirebaseStorage.instance;
@@ -134,7 +135,10 @@ class _ProfileSearchPageState extends State<ProfileSearchPage> {
   Widget setLayout(String gameName) {
     switch (gameName) {
       case "League of Legends":
-        return LeagueOfLegendsProfile();
+        return LOLProfile();
+        break;
+      case "Playerunknown's Battlegrounds":
+        return PUBGProfile();
         break;
       default:
         return Center(child: Text(gameName));

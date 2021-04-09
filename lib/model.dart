@@ -1,4 +1,4 @@
-class Summoner {
+class LOLUser {
   String id;
   String name;
   int profileIconId;
@@ -10,7 +10,7 @@ class Summoner {
   String flexRank;
   int flexLeaguePoints;
 
-  Summoner(
+  LOLUser(
       {this.id,
       this.name,
       this.profileIconId,
@@ -27,3 +27,5 @@ class Summoner {
     return "SUMMONER INFO:\n[id: $id\nname: $name\nprofileIconId: $profileIconId\nsummonerLevel: $summonerLevel\nsoloTier: $soloTier\nsoloRank: $soloRank\nsoloLeaguePoints: $soloLeaguePoints\nflexTier: $flexTier\nflexRank: $flexRank\nflexLeaguePoints: $flexLeaguePoints]";
   }
 }
+
+class PUBGUser {}

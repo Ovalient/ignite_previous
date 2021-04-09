@@ -4,18 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model.dart';
-import 'package:ignite/pages/dashboard/serach_page.dart';
 import 'package:ignite/pages/dashboard_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
 
-class LeagueOfLegendsProfile extends StatefulWidget {
-  LeagueOfLegendsProfile({Key key}) : super(key: key);
+class LOLProfile extends StatefulWidget {
+  LOLProfile({Key key}) : super(key: key);
 
   @override
-  _LeagueOfLegendsProfileState createState() => _LeagueOfLegendsProfileState();
+  _LOLProfileState createState() => _LOLProfileState();
 }
 
-class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
+class _LOLProfileState extends State<LOLProfile>
     with SingleTickerProviderStateMixin {
   final firestore = FirebaseFirestore.instance;
 
@@ -26,7 +25,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
   FocusNode _textFocusNode;
   bool _isEditingText = false;
 
-  Summoner summoner;
+  LOLUser lolUser;
   bool _searching = false;
 
   final headers = {
@@ -38,29 +37,29 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     'X-Riot-Token': 'RGAPI-7fb26a98-5026-425c-91bc-bf1499676e17',
   };
 
-  Future<Summoner> getSummonerName(String summonerName) async {
+  Future<LOLUser> getUserName(String userName) async {
     setState(() {
       _searching = true;
     });
     final url =
         "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" +
-            summonerName;
+            userName;
     final response = await http.get(
       Uri.parse(url),
       headers: headers,
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> summonerData = jsonDecode(response.body);
-      return await getSummonerData(summonerData);
+      final Map<String, dynamic> userData = jsonDecode(response.body);
+      return await getUserData(userData);
     } else {
       return null;
     }
   }
 
-  Future<Summoner> getSummonerData(Map<String, dynamic> summonerData) async {
+  Future<LOLUser> getUserData(Map<String, dynamic> userData) async {
     final url =
         "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" +
-            summonerData['id'];
+            userData['id'];
     final response = await http.get(
       Uri.parse(url),
       headers: headers,
@@ -69,20 +68,20 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     if (response.statusCode == 200) {
       final List<dynamic> leagueData = jsonDecode(response.body);
       if (leagueData.isEmpty) {
-        summoner = Summoner(
-          id: summonerData["id"],
-          name: summonerData["name"],
-          profileIconId: summonerData["profileIconId"],
-          summonerLevel: summonerData["summonerLevel"],
+        lolUser = LOLUser(
+          id: userData["id"],
+          name: userData["name"],
+          profileIconId: userData["profileIconId"],
+          summonerLevel: userData["summonerLevel"],
         );
       } else {
         if (leagueData[0]["queueType"] == "RANKED_SOLO_5x5") {
           if (leagueData.length > 1) {
-            summoner = Summoner(
-              id: summonerData["id"],
-              name: summonerData["name"],
-              profileIconId: summonerData["profileIconId"],
-              summonerLevel: summonerData["summonerLevel"],
+            lolUser = LOLUser(
+              id: userData["id"],
+              name: userData["name"],
+              profileIconId: userData["profileIconId"],
+              summonerLevel: userData["summonerLevel"],
               soloTier: leagueData[0]["tier"],
               soloRank: leagueData[0]["rank"],
               soloLeaguePoints: leagueData[0]["leaguePoints"],
@@ -91,28 +90,28 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
               flexLeaguePoints: leagueData[1]["leaguePoints"],
             );
           } else {
-            summoner = Summoner(
-                id: summonerData["id"],
-                name: summonerData["name"],
-                profileIconId: summonerData["profileIconId"],
-                summonerLevel: summonerData["summonerLevel"],
+            lolUser = LOLUser(
+                id: userData["id"],
+                name: userData["name"],
+                profileIconId: userData["profileIconId"],
+                summonerLevel: userData["summonerLevel"],
                 soloTier: leagueData[0]["tier"],
                 soloRank: leagueData[0]["rank"],
                 soloLeaguePoints: leagueData[0]["leaguePoints"]);
           }
         } else if (leagueData[0]["queueType"] == "RANKED_FLEX_SR") {
-          summoner = Summoner(
-            id: summonerData["id"],
-            name: summonerData["name"],
-            profileIconId: summonerData["profileIconId"],
-            summonerLevel: summonerData["summonerLevel"],
+          lolUser = LOLUser(
+            id: userData["id"],
+            name: userData["name"],
+            profileIconId: userData["profileIconId"],
+            summonerLevel: userData["summonerLevel"],
             flexTier: leagueData[0]["tier"],
             flexRank: leagueData[0]["rank"],
             flexLeaguePoints: leagueData[0]["leaguePoints"],
           );
         }
       }
-      return summoner;
+      return lolUser;
     } else {
       return null;
     }
@@ -161,8 +160,8 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                           .doc(getUser().uid)
                           .collection("League of Legends")
                           .add({
-                        "accountId": summoner.id,
-                        "name": summoner.name,
+                        "accountId": lolUser.id,
+                        "name": lolUser.name,
                       }).then((value) async {
                         Navigator.pop(context);
                         await showDialog(
@@ -211,8 +210,8 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
             .doc(getUser().uid)
             .collection("League of Legends")
             .add({
-          "accountId": summoner.id,
-          "name": summoner.name,
+          "accountId": lolUser.id,
+          "name": lolUser.name,
         }).then((value) async {
           Navigator.pop(context);
           await showDialog(
@@ -244,6 +243,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
 
   @override
   void initState() {
+    super.initState();
     _animationController =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _animation = CurvedAnimation(
@@ -252,7 +252,6 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
     );
     _animation.addListener(() => setState(() {}));
 
-    super.initState();
     _textController = TextEditingController();
     _textController.text = null;
     _textFocusNode = FocusNode();
@@ -296,13 +295,12 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                         icon: Icon(Icons.search),
                         onPressed: () async {
                           if (_validateText(_textController.text) == null) {
-                            summoner =
-                                await getSummonerName(_textController.text);
+                            lolUser = await getUserName(_textController.text);
                             setState(() {
                               _searching = false;
                             });
                             _animationController.forward();
-                            print(summoner.toString());
+                            print(lolUser.toString());
                           }
                         },
                       )),
@@ -313,12 +311,12 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                   },
                   onSubmitted: (value) async {
                     if (_validateText(_textController.text) == null) {
-                      summoner = await getSummonerName(_textController.text);
+                      lolUser = await getUserName(_textController.text);
                       setState(() {
                         _searching = false;
                       });
                       _animationController.forward();
-                      print(summoner.toString());
+                      print(lolUser.toString());
                     }
                   }),
             ),
@@ -333,7 +331,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: summoner == null
+                  child: lolUser == null
                       ? Text("소환사 정보가 없습니다")
                       : Card(
                           child: InkWell(
@@ -347,23 +345,23 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                       content: ListTile(
                                         leading: CircleAvatar(
                                             backgroundImage: NetworkImage(
-                                                "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png"),
+                                                "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${lolUser.profileIconId}.png"),
                                             child: Text(
-                                                "${summoner.summonerLevel}",
+                                                "${lolUser.summonerLevel}",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 12))),
-                                        title: Text(summoner.name,
+                                        title: Text(lolUser.name,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
-                                        subtitle: summoner.soloTier != null &&
-                                                summoner.soloRank != null
+                                        subtitle: lolUser.soloTier != null &&
+                                                lolUser.soloRank != null
                                             ? Text.rich(
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(
                                                         text:
-                                                            "${summoner.soloTier} ${summoner.soloRank}",
+                                                            "${lolUser.soloTier} ${lolUser.soloRank}",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight
@@ -371,7 +369,7 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                                                     TextSpan(text: " | "),
                                                     TextSpan(
                                                         text:
-                                                            "${summoner.soloLeaguePoints}LP",
+                                                            "${lolUser.soloLeaguePoints}LP",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight
@@ -404,28 +402,28 @@ class _LeagueOfLegendsProfileState extends State<LeagueOfLegendsProfile>
                             child: ListTile(
                               leading: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${summoner.profileIconId}.png"),
-                                  child: Text('${summoner.summonerLevel}',
+                                      "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${lolUser.profileIconId}.png"),
+                                  child: Text('${lolUser.summonerLevel}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12))),
-                              title: Text(summoner.name,
+                              title: Text(lolUser.name,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              subtitle: summoner.soloTier != null &&
-                                      summoner.soloRank != null
+                              subtitle: lolUser.soloTier != null &&
+                                      lolUser.soloRank != null
                                   ? Text.rich(
                                       TextSpan(
                                         children: [
                                           TextSpan(
                                               text:
-                                                  "${summoner.soloTier} ${summoner.soloRank}",
+                                                  "${lolUser.soloTier} ${lolUser.soloRank}",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500)),
                                           TextSpan(text: ' | '),
                                           TextSpan(
                                               text:
-                                                  "${summoner.soloLeaguePoints}LP",
+                                                  "${lolUser.soloLeaguePoints}LP",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500)),
                                         ],
