@@ -34,10 +34,9 @@ class _LOLProfileState extends State<LOLProfile>
     'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
     'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Origin': 'https://developer.riotgames.com',
-    'X-Riot-Token': 'RGAPI-7fb26a98-5026-425c-91bc-bf1499676e17',
   };
 
-  Future<LOLUser> getUserName(String userName) async {
+  Future<String> getUserName(String userName) async {
     setState(() {
       _searching = true;
     });
@@ -64,7 +63,6 @@ class _LOLProfileState extends State<LOLProfile>
       Uri.parse(url),
       headers: headers,
     );
-
     if (response.statusCode == 200) {
       final List<dynamic> leagueData = jsonDecode(response.body);
       if (leagueData.isEmpty) {

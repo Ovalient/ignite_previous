@@ -21,6 +21,7 @@ class _PUBGProfileState extends State<PUBGProfile>
   AnimationController _animationController;
   Animation _animation;
 
+  FocusNode _dropFocusNode;
   TextEditingController _textController;
   FocusNode _textFocusNode;
   bool _isEditingText = false;
@@ -29,6 +30,47 @@ class _PUBGProfileState extends State<PUBGProfile>
   bool _searching = false;
 
   String _server;
+
+  final headers = {"Accept": "application/vnd.api+json"};
+
+  Future<String> getCurrentSeason() async {
+    final url = "https://api.pubg.com/shards/steam/seasons";
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> seasonData = jsonDecode(response.body);
+      List seasons = seasonData["data"];
+      return seasons.last["id"];
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> getUserName(String userName) async {
+    final url =
+        "https://api.pubg.com/shards/steam/players?filter[playerNames]=$userName";
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> userData = jsonDecode(response.body);
+      List user = userData["data"];
+      return user.first["id"];
+    } else {
+      return null;
+    }
+  }
+
+  Future<PUBGUser> getUserData(String season, String accountId) async {
+    setState(() {
+      _searching = true;
+    });
+    final url =
+        "https://api.pubg.com/shards/steam/players/$accountId/seasons/$season/ranked";
+  }
 
   String _validateText(String value) {
     value = value.trim();
@@ -52,9 +94,12 @@ class _PUBGProfileState extends State<PUBGProfile>
     );
     _animation.addListener(() => setState(() {}));
 
+    _dropFocusNode = FocusNode();
     _textController = TextEditingController();
     _textController.text = null;
     _textFocusNode = FocusNode();
+
+    getUserName("WackyJacky101");
   }
 
   @override
@@ -69,11 +114,15 @@ class _PUBGProfileState extends State<PUBGProfile>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             DropdownButton(
+              autofocus: true,
+              focusNode: _dropFocusNode,
               value: _server,
               onChanged: (value) {
                 setState(() {
                   _server = value;
                 });
+                _dropFocusNode.unfocus();
+                FocusScope.of(context).requestFocus(_textFocusNode);
               },
               items: ['Steam', 'Kakao'].map<DropdownMenuItem>((value) {
                 return DropdownMenuItem(value: value, child: Text(value));
@@ -88,7 +137,6 @@ class _PUBGProfileState extends State<PUBGProfile>
               child: TextField(
                 controller: _textController,
                 focusNode: _textFocusNode,
-                autofocus: true,
                 decoration: InputDecoration(
                     fillColor: Colors.redAccent,
                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
