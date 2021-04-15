@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ignite/pages/my_pages/my_info_page.dart';
+import 'package:ignite/pages/sign_in_page.dart';
+import 'package:ignite/utils/firebase_provider.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -61,7 +63,21 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("내 정보")),
+      appBar: AppBar(
+        title: Text("내 정보"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.logout),
+              tooltip: "로그아웃",
+              onPressed: () async {
+                await signOut().then((result) {
+                  Navigator.popAndPushNamed(context, SignInPage.id);
+                }).catchError((error) {
+                  print('Sign Out Error: $error');
+                });
+              })
+        ],
+      ),
       body: Container(
         child: ListView(
           children: [

@@ -31,7 +31,10 @@ class _PUBGProfileState extends State<PUBGProfile>
 
   String _server;
 
-  final headers = {"Accept": "application/vnd.api+json"};
+  final headers = {
+    "Authorization": "Bearer XXXX",
+    "Accept": "application/vnd.api+json"
+  };
 
   Future<String> getCurrentSeason() async {
     final url = "https://api.pubg.com/shards/steam/seasons";
@@ -48,7 +51,7 @@ class _PUBGProfileState extends State<PUBGProfile>
     }
   }
 
-  Future<String> getUserName(String userName) async {
+  Future<PUBGUser> getUserName(String userName) async {
     final url =
         "https://api.pubg.com/shards/steam/players?filter[playerNames]=$userName";
     final response = await http.get(
@@ -57,19 +60,70 @@ class _PUBGProfileState extends State<PUBGProfile>
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> userData = jsonDecode(response.body);
-      List user = userData["data"];
-      return user.first["id"];
+      List userInfo = userData["data"];
+      return await getUserData(await getCurrentSeason(), userInfo);
     } else {
       return null;
     }
   }
 
-  Future<PUBGUser> getUserData(String season, String accountId) async {
+  Future<PUBGUser> getUserData(String season, List userInfo) async {
     setState(() {
       _searching = true;
     });
+    final server = _server == "Steam" ? "steam" : "kakao";
     final url =
-        "https://api.pubg.com/shards/steam/players/$accountId/seasons/$season/ranked";
+        "https://api.pubg.com/shards/$server/players/${userInfo.first["id"]}/seasons/$season/ranked";
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> userData = jsonDecode(response.body);
+      final Map<String, dynamic> rankData =
+          userData["data"]["attributes"]["rankedGameModeStats"];
+      print(rankData);
+      if (rankData.isEmpty) {
+        pubgUser = PUBGUser(
+          name: userInfo.first["attributes"]["name"],
+          accountId: userInfo.first["id"],
+        );
+      } else {
+        if (rankData["solo"] != null) {
+          if (rankData["squad"] != null) {
+            pubgUser = PUBGUser(
+              accountId: userInfo.first["id"],
+              name: userInfo.first["attributes"]["name"],
+              soloTier: rankData["solo"]["currentTier"]["tier"],
+              soloRank: rankData["solo"]["currentTier"]["subTier"],
+              soloPoints: rankData["solo"]["currentRankPoint"],
+              squadTier: rankData["squad"]["currentTier"]["tier"],
+              squadRank: rankData["squad"]["currentTier"]["subTier"],
+              squadPoints: rankData["squad"]["currentRankPoint"],
+            );
+          } else {
+            pubgUser = PUBGUser(
+              accountId: userInfo.first["id"],
+              name: userInfo.first["attributes"]["name"],
+              soloTier: rankData["solo"]["currentTier"]["tier"],
+              soloRank: rankData["solo"]["currentTier"]["subTier"],
+              soloPoints: rankData["solo"]["currentRankPoint"],
+            );
+          }
+        } else if (rankData["squad"] != null) {
+          pubgUser = PUBGUser(
+            accountId: userInfo.first["id"],
+            name: userInfo.first["attributes"]["name"],
+            squadTier: rankData["squad"]["currentTier"]["tier"],
+            squadRank: rankData["squad"]["currentTier"]["subTier"],
+            squadPoints: rankData["squad"]["currentRankPoint"],
+          );
+        }
+      }
+      return pubgUser;
+    } else {
+      return null;
+    }
   }
 
   String _validateText(String value) {
@@ -81,6 +135,189 @@ class _PUBGProfileState extends State<PUBGProfile>
       }
     }
     return null;
+  }
+
+  Widget getUserRankIcon() {
+    switch (pubgUser.squadTier) {
+      case "Bronze":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFFA46628),
+            ));
+        break;
+      case "Silver":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFFC0C0C0),
+            ));
+        break;
+      case "Gold":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFFFFD700),
+            ));
+        break;
+      case "Platinum":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFF00CED1),
+            ));
+        break;
+      case "Diamond":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFFF4BBFF),
+            ));
+        break;
+      case "Master":
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.panorama_wide_angle_select,
+              color: Color(0xFF8B0000),
+            ));
+        break;
+      default:
+        return CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(Icons.panorama_wide_angle, color: Colors.grey));
+        break;
+    }
+  }
+
+  addUserData() async {
+    await firestore
+        .collection("user")
+        .doc(getUser().uid)
+        .collection("Playerunknown's Battlegrounds")
+        .get()
+        .then((value) async {
+      if (value.docs.isNotEmpty) {
+        Navigator.pop(context);
+        await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              var docId = value.docs.single.id;
+              return AlertDialog(
+                title: Text("어라?"),
+                content: Text("이미 소환사 정보가 등록되어 있습니다\n\'네\'를 누르면 기존 정보를 덮어씌웁니다"),
+                actions: [
+                  MaterialButton(
+                    onPressed: () async {
+                      await firestore
+                          .collection("user")
+                          .doc(getUser().uid)
+                          .collection("Playerunknown's Battlegrounds")
+                          .doc(docId)
+                          .delete();
+
+                      await firestore
+                          .collection("user")
+                          .doc(getUser().uid)
+                          .collection("Playerunknown's Battlegrounds")
+                          .add({
+                        "accountId": pubgUser.accountId,
+                        "name": pubgUser.name,
+                        "soloTier": pubgUser.soloTier,
+                        "soloRank": pubgUser.soloRank,
+                        "soloPoints": pubgUser.soloPoints,
+                        "squadTier": pubgUser.squadTier,
+                        "squadRank": pubgUser.squadRank,
+                        "squadPoints": pubgUser.squadPoints,
+                      }).then((value) async {
+                        Navigator.pop(context);
+                        await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("등록 완료!"),
+                                content: Text(
+                                    "유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                                actions: [
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DashboardPage(index: 1),
+                                          ),
+                                          (route) => false);
+                                    },
+                                    child: Text("확인"),
+                                  ),
+                                ],
+                              );
+                            });
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text("네"),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("아니오"),
+                  ),
+                ],
+              );
+            });
+      }
+      if (value.docs.isEmpty) {
+        await firestore
+            .collection("user")
+            .doc(getUser().uid)
+            .collection("Playerunknown's Battlegrounds")
+            .add({
+          "accountId": pubgUser.accountId,
+          "name": pubgUser.name,
+          "soloTier": pubgUser.soloTier,
+          "soloRank": pubgUser.soloRank,
+          "soloPoints": pubgUser.soloPoints,
+          "squadTier": pubgUser.squadTier,
+          "squadRank": pubgUser.squadRank,
+          "squadPoints": pubgUser.squadPoints,
+        }).then((value) async {
+          Navigator.pop(context);
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("등록 완료!"),
+                  content:
+                      Text("유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                  actions: [
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DashboardPage(index: 1),
+                            ),
+                            (route) => false);
+                      },
+                      child: Text("확인"),
+                    ),
+                  ],
+                );
+              });
+        });
+      }
+    });
   }
 
   @override
@@ -98,8 +335,6 @@ class _PUBGProfileState extends State<PUBGProfile>
     _textController = TextEditingController();
     _textController.text = null;
     _textFocusNode = FocusNode();
-
-    getUserName("WackyJacky101");
   }
 
   @override
@@ -155,15 +390,14 @@ class _PUBGProfileState extends State<PUBGProfile>
                     suffixIcon: IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () async {
-                        _animationController.forward();
-                        // if (_validateText(_textController.text) == null) {
-                        //   pubgUser = await getUserName(_textController.text);
-                        //   setState(() {
-                        //     _searching = false;
-                        //   });
-                        //   _animationController.forward();
-                        //   print(pubgUser.toString());
-                        // }
+                        if (_validateText(_textController.text) == null) {
+                          await getUserName(_textController.text);
+                          setState(() {
+                            _searching = false;
+                          });
+                          _animationController.forward();
+                          print(pubgUser.toString());
+                        }
                       },
                     )),
                 onChanged: (value) {
@@ -172,15 +406,14 @@ class _PUBGProfileState extends State<PUBGProfile>
                   });
                 },
                 onSubmitted: (value) async {
-                  _animationController.forward();
-                  // if (_validateText(_textController.text) == null) {
-                  //   pubgUser = await getUserName(_textController.text);
-                  //   setState(() {
-                  //     _searching = false;
-                  //   });
-                  //   _animationController.forward();
-                  //   print(pubgUser.toString());
-                  // }
+                  if (_validateText(_textController.text) == null) {
+                    await getUserName(_textController.text);
+                    setState(() {
+                      _searching = false;
+                    });
+                    _animationController.forward();
+                    print(pubgUser.toString());
+                  }
                 },
               ),
             ),
@@ -207,20 +440,39 @@ class _PUBGProfileState extends State<PUBGProfile>
                                   return AlertDialog(
                                     title: Text("이 계정이 맞나요?"),
                                     content: ListTile(
-                                      leading: CircleAvatar(
-                                          child: Text("temp",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12))),
-                                      title: Text("temp",
+                                      leading: getUserRankIcon(),
+                                      title: Text(pubgUser.name,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      subtitle: Text("temp"),
+                                      subtitle: pubgUser.squadTier != null &&
+                                              pubgUser.squadRank != null
+                                          ? Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                      text:
+                                                          "${pubgUser.squadTier} ${pubgUser.squadRank}",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                  TextSpan(text: ' | '),
+                                                  TextSpan(
+                                                      text:
+                                                          "${pubgUser.squadPoints}PT",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                ],
+                                              ),
+                                            )
+                                          : Text("UNRANKED",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
                                     ),
                                     actions: [
                                       MaterialButton(
                                         onPressed: () async {
-                                          // await addSummonerData();
+                                          await addUserData();
                                         },
                                         child: Text("네"),
                                       ),
@@ -236,15 +488,31 @@ class _PUBGProfileState extends State<PUBGProfile>
                               );
                             },
                             child: ListTile(
-                              leading: CircleAvatar(
-                                  child: Text("temp",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12))),
-                              title: Text("temp",
+                              leading: getUserRankIcon(),
+                              title: Text(pubgUser.name,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              subtitle: Text("temp"),
+                              subtitle: pubgUser.squadTier != null &&
+                                      pubgUser.squadRank != null
+                                  ? Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                              text:
+                                                  "${pubgUser.squadTier} ${pubgUser.squadRank}",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                          TextSpan(text: ' | '),
+                                          TextSpan(
+                                              text: "${pubgUser.squadPoints}PT",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    )
+                                  : Text("UNRANKED",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
                             ),
                           ),
                         ),

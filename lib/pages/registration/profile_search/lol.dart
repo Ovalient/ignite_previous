@@ -34,9 +34,10 @@ class _LOLProfileState extends State<LOLProfile>
     'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
     'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Origin': 'https://developer.riotgames.com',
+    'X-Riot-Token': 'XXXX',
   };
 
-  Future<String> getUserName(String userName) async {
+  Future<LOLUser> getUserName(String userName) async {
     setState(() {
       _searching = true;
     });
@@ -158,8 +159,16 @@ class _LOLProfileState extends State<LOLProfile>
                           .doc(getUser().uid)
                           .collection("League of Legends")
                           .add({
-                        "accountId": lolUser.id,
+                        "id": lolUser.id,
                         "name": lolUser.name,
+                        "profileIconId": lolUser.profileIconId,
+                        "summonerLevel": lolUser.summonerLevel,
+                        "soloTier": lolUser.soloTier,
+                        "soloRank": lolUser.soloRank,
+                        "soloLeaguePoints": lolUser.soloLeaguePoints,
+                        "flexTier": lolUser.flexTier,
+                        "flexRank": lolUser.flexRank,
+                        "flexLeaguePoints": lolUser.flexLeaguePoints,
                       }).then((value) async {
                         Navigator.pop(context);
                         await showDialog(
@@ -169,18 +178,17 @@ class _LOLProfileState extends State<LOLProfile>
                               return AlertDialog(
                                 title: Text("등록 완료!"),
                                 content: Text(
-                                    "소환사 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                                    "유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
                                 actions: [
                                   MaterialButton(
                                     onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DashboardPage(index: 1),
-                                        ),
-                                      );
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DashboardPage(index: 1),
+                                          ),
+                                          (route) => false);
                                     },
                                     child: Text("확인"),
                                   ),
@@ -208,8 +216,16 @@ class _LOLProfileState extends State<LOLProfile>
             .doc(getUser().uid)
             .collection("League of Legends")
             .add({
-          "accountId": lolUser.id,
+          "id": lolUser.id,
           "name": lolUser.name,
+          "profileIconId": lolUser.profileIconId,
+          "summonerLevel": lolUser.summonerLevel,
+          "soloTier": lolUser.soloTier,
+          "soloRank": lolUser.soloRank,
+          "soloLeaguePoints": lolUser.soloLeaguePoints,
+          "flexTier": lolUser.flexTier,
+          "flexRank": lolUser.flexRank,
+          "flexLeaguePoints": lolUser.flexLeaguePoints,
         }).then((value) async {
           Navigator.pop(context);
           await showDialog(
@@ -219,15 +235,16 @@ class _LOLProfileState extends State<LOLProfile>
                 return AlertDialog(
                   title: Text("등록 완료!"),
                   content:
-                      Text("소환사 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                      Text("유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
                   actions: [
                     MaterialButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DashboardPage(index: 1)));
+                              builder: (context) => DashboardPage(index: 1),
+                            ),
+                            (route) => false);
                       },
                       child: Text("확인"),
                     ),
@@ -293,7 +310,7 @@ class _LOLProfileState extends State<LOLProfile>
                         icon: Icon(Icons.search),
                         onPressed: () async {
                           if (_validateText(_textController.text) == null) {
-                            lolUser = await getUserName(_textController.text);
+                            await getUserName(_textController.text);
                             setState(() {
                               _searching = false;
                             });
@@ -309,7 +326,7 @@ class _LOLProfileState extends State<LOLProfile>
                   },
                   onSubmitted: (value) async {
                     if (_validateText(_textController.text) == null) {
-                      lolUser = await getUserName(_textController.text);
+                      await getUserName(_textController.text);
                       setState(() {
                         _searching = false;
                       });
