@@ -64,6 +64,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/images/game_icons/
+    - assets/images/game_icons/lol_lanes/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

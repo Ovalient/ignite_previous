@@ -117,8 +117,7 @@ class _MyPageState extends State<MyPage> {
                 },
                 child: ListTile(
                   title: Text("계정 관리"),
-                  subtitle: Text("게임 계정을 추가하거나 수정 및 삭제합니다",
-                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  subtitle: Text("게임 계정을 추가하거나 수정 및 삭제합니다"),
                 )),
             Divider(height: 10.0, thickness: 10.0),
             InkWell(

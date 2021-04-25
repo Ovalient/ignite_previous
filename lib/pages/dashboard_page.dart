@@ -45,6 +45,7 @@ class _DashboardPageState extends State<DashboardPage>
       child: Scaffold(
         body: PageView(
           controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             MainPage(),
             SearchPage(),

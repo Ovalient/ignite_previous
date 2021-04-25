@@ -152,23 +152,52 @@ class _SearchPageState extends State<SearchPage>
                           shrinkWrap: true,
                           itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, index) {
-                            return Card(
-                              child: InkWell(
-                                onTap: () {},
-                                child: ListTile(
+                            if (_boardId == "lol" &&
+                                snapshot.data.docs[index].data()["lane"] !=
+                                    null) {
+                              var image = Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: 20.0,
+                                  child: Image.asset(
+                                      "assets/images/game_icons/lol_lanes/${snapshot.data.docs[index].data()["lane"]}.png",
+                                      fit: BoxFit.contain));
+                              return Card(
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: ListTile(
+                                    minLeadingWidth: 10,
+                                    leading: image,
                                     title: Text(
                                         snapshot.data.docs[index]
                                             .data()["title"],
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold))),
-                              ),
-                            );
+                                            fontWeight: FontWeight.bold)),
+                                    subtitle: Text('temperatory text'),
+                                  ),
+                                ),
+                              );
+                            } else
+                              return Card(
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: ListTile(
+                                      title: Text(
+                                          snapshot.data.docs[index]
+                                              .data()["title"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))),
+                                ),
+                              );
                           });
                     })
-                : Center(
-                    child: Text("동료를 찾을 게임을 선택해주세요."),
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Center(child: CircularProgressIndicator()),
                   ),
           ),
+          floatingActionButton:
+              FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
         );
 
     return StreamBuilder(

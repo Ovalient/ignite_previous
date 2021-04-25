@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:ignite/pages/registration/registration_page.dart';
@@ -12,6 +14,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   int _index = 0;
+  PageController _pageController;
 
   List<Widget> swiper = [
     Card(
@@ -122,6 +125,22 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   void afterFirstLayout(BuildContext context) => checkFirstSeen();
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _index);
+    Timer.periodic(Duration(seconds: 4), (timer) {
+      if (_index < 2)
+        _index++;
+      else
+        _index = 0;
+
+      if (_pageController.hasClients)
+        _pageController.animateToPage(_index,
+            duration: Duration(milliseconds: 200), curve: Curves.bounceInOut);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("메인")),
@@ -137,7 +156,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
               height: 240,
               child: PageView.builder(
                 itemCount: 3,
-                controller: PageController(),
+                controller: _pageController,
                 onPageChanged: (index) => setState(() => _index = index),
                 itemBuilder: (context, index) {
                   return swiper[index];
