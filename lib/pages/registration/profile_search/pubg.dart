@@ -199,34 +199,28 @@ class _PUBGProfileState extends State<PUBGProfile>
     await firestore
         .collection("user")
         .doc(getUser().uid)
-        .collection("Playerunknown's Battlegrounds")
+        .collection("accounts")
+        .doc("pubg")
         .get()
         .then((value) async {
-      if (value.docs.isNotEmpty) {
+      if (value.exists) {
         Navigator.pop(context);
         await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              var docId = value.docs.single.id;
               return AlertDialog(
                 title: Text("어라?"),
-                content: Text("이미 소환사 정보가 등록되어 있습니다\n\'네\'를 누르면 기존 정보를 덮어씌웁니다"),
+                content: Text("이미 유저 정보가 등록되어 있습니다\n\'네\'를 누르면 기존 정보를 덮어씌웁니다"),
                 actions: [
                   MaterialButton(
                     onPressed: () async {
                       await firestore
                           .collection("user")
                           .doc(getUser().uid)
-                          .collection("Playerunknown's Battlegrounds")
-                          .doc(docId)
-                          .delete();
-
-                      await firestore
-                          .collection("user")
-                          .doc(getUser().uid)
-                          .collection("Playerunknown's Battlegrounds")
-                          .add({
+                          .collection("accounts")
+                          .doc("pubg")
+                          .set({
                         "accountId": pubgUser.accountId,
                         "name": pubgUser.name,
                         "soloTier": pubgUser.soloTier,
@@ -275,13 +269,13 @@ class _PUBGProfileState extends State<PUBGProfile>
                 ],
               );
             });
-      }
-      if (value.docs.isEmpty) {
+      } else {
         await firestore
             .collection("user")
             .doc(getUser().uid)
-            .collection("Playerunknown's Battlegrounds")
-            .add({
+            .collection("accounts")
+            .doc("pubg")
+            .set({
           "accountId": pubgUser.accountId,
           "name": pubgUser.name,
           "soloTier": pubgUser.soloTier,

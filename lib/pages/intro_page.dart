@@ -166,7 +166,7 @@ class _IntroPageState extends State<IntroPage> {
           scrollPhysics: BouncingScrollPhysics(),
 
           // Show or hide status bar
-          shouldHideStatusBar: false,
+          hideStatusBar: false,
 
           // On tab change completed
           onTabChangeCompleted: this.onTabChangeCompleted,

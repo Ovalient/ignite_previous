@@ -1,11 +1,11 @@
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:ignite/model.dart';
-import 'package:ignite/pages/dashboard_page.dart';
-import 'package:ignite/utils/firebase_provider.dart';
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:flutter/material.dart";
+import "package:http/http.dart" as http;
+import "package:ignite/model.dart";
+import "package:ignite/pages/dashboard_page.dart";
+import "package:ignite/utils/firebase_provider.dart";
 
 class LOLProfile extends StatefulWidget {
   LOLProfile({Key key}) : super(key: key);
@@ -29,12 +29,12 @@ class _LOLProfileState extends State<LOLProfile>
   bool _searching = false;
 
   final headers = {
-    'User-Agent':
-        'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36',
-    'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
-    'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Origin': 'https://developer.riotgames.com',
-    'X-Riot-Token': 'XXXX',
+    "User-Agent":
+        "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36",
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+    "Origin": "https://developer.riotgames.com",
+    "X-Riot-Token": "XXXX",
   };
 
   Future<LOLUser> getUserName(String userName) async {
@@ -59,7 +59,7 @@ class _LOLProfileState extends State<LOLProfile>
   Future<LOLUser> getUserData(Map<String, dynamic> userData) async {
     final url =
         "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" +
-            userData['id'];
+            userData["id"];
     final response = await http.get(
       Uri.parse(url),
       headers: headers,
@@ -121,7 +121,7 @@ class _LOLProfileState extends State<LOLProfile>
 
     if (value != null) {
       if (value.isEmpty) {
-        return "Username can\'t be empty";
+        return "Username can\"t be empty";
       }
     }
     return null;
@@ -131,34 +131,29 @@ class _LOLProfileState extends State<LOLProfile>
     await firestore
         .collection("user")
         .doc(getUser().uid)
-        .collection("League of Legends")
+        .collection("accounts")
+        .doc("lol")
         .get()
         .then((value) async {
-      if (value.docs.isNotEmpty) {
+      print(value);
+      if (value.exists) {
         Navigator.pop(context);
         await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              var docId = value.docs.single.id;
               return AlertDialog(
                 title: Text("어라?"),
-                content: Text("이미 소환사 정보가 등록되어 있습니다\n\'네\'를 누르면 기존 정보를 덮어씌웁니다"),
+                content: Text("이미 소환사 정보가 등록되어 있습니다\n\"네\"를 누르면 기존 정보를 덮어씌웁니다"),
                 actions: [
                   MaterialButton(
                     onPressed: () async {
                       await firestore
                           .collection("user")
                           .doc(getUser().uid)
-                          .collection("League of Legends")
-                          .doc(docId)
-                          .delete();
-
-                      await firestore
-                          .collection("user")
-                          .doc(getUser().uid)
-                          .collection("League of Legends")
-                          .add({
+                          .collection("accounts")
+                          .doc("lol")
+                          .set({
                         "id": lolUser.id,
                         "name": lolUser.name,
                         "profileIconId": lolUser.profileIconId,
@@ -178,7 +173,7 @@ class _LOLProfileState extends State<LOLProfile>
                               return AlertDialog(
                                 title: Text("등록 완료!"),
                                 content: Text(
-                                    "유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                                    "유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \"내 정보\"에서 가능합니다"),
                                 actions: [
                                   MaterialButton(
                                     onPressed: () {
@@ -209,13 +204,13 @@ class _LOLProfileState extends State<LOLProfile>
                 ],
               );
             });
-      }
-      if (value.docs.isEmpty) {
+      } else {
         await firestore
             .collection("user")
             .doc(getUser().uid)
-            .collection("League of Legends")
-            .add({
+            .collection("accounts")
+            .doc("lol")
+            .set({
           "id": lolUser.id,
           "name": lolUser.name,
           "profileIconId": lolUser.profileIconId,
@@ -235,7 +230,7 @@ class _LOLProfileState extends State<LOLProfile>
                 return AlertDialog(
                   title: Text("등록 완료!"),
                   content:
-                      Text("유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \'내 정보\'에서 가능합니다"),
+                      Text("유저 정보가 계정에 추가되었습니다\n수정이나 삭제는 \"내 정보\"에서 가능합니다"),
                   actions: [
                     MaterialButton(
                       onPressed: () {
@@ -294,7 +289,7 @@ class _LOLProfileState extends State<LOLProfile>
                   decoration: InputDecoration(
                       fillColor: Colors.redAccent,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      labelText: "Summoner\'s Name",
+                      labelText: "Summoner\"s Name",
                       icon: Icon(
                         Icons.person,
                       ),
@@ -418,7 +413,7 @@ class _LOLProfileState extends State<LOLProfile>
                               leading: CircleAvatar(
                                   backgroundImage: NetworkImage(
                                       "https://ddragon.leagueoflegends.com/cdn/11.6.1/img/profileicon/${lolUser.profileIconId}.png"),
-                                  child: Text('${lolUser.summonerLevel}',
+                                  child: Text("${lolUser.summonerLevel}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12))),
@@ -435,7 +430,7 @@ class _LOLProfileState extends State<LOLProfile>
                                                   "${lolUser.soloTier} ${lolUser.soloRank}",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500)),
-                                          TextSpan(text: ' | '),
+                                          TextSpan(text: " | "),
                                           TextSpan(
                                               text:
                                                   "${lolUser.soloLeaguePoints}LP",

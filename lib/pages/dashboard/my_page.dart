@@ -5,6 +5,7 @@ import 'package:ignite/pages/sign_in_page.dart';
 import 'package:ignite/utils/firebase_provider.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:ignite/pages/registration/registration_page.dart';
 
 class MyPage extends StatefulWidget {
   MyPage({Key key}) : super(key: key);
@@ -15,6 +16,25 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final LocalAuthentication _localAuthentication = LocalAuthentication();
+
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 
   Future<bool> _isBiometricAvailable() async {
     bool isAvailable = false;
@@ -92,7 +112,9 @@ class _MyPageState extends State<MyPage> {
             InkWell(onTap: () {}, child: ListTile(title: Text("공지사항"))),
             Divider(height: 10.0, thickness: 10.0),
             InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, _createRoute(RegistrationPage()));
+                },
                 child: ListTile(
                   title: Text("계정 관리"),
                   subtitle: Text("게임 계정을 추가하거나 수정 및 삭제합니다",

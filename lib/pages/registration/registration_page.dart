@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:ignite/pages/registration/profile_search/lol.dart';
 import 'package:ignite/pages/registration/profile_search/pubg.dart';
 
-final firestore = FirebaseFirestore.instance;
-final storage = FirebaseStorage.instance;
-
 Route _createRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -34,43 +31,65 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  final firestore = FirebaseFirestore.instance;
+  final storage = FirebaseStorage.instance;
+
+  Map _images = Map<String, Image>();
+  bool _imageLoaded = false;
+
+  Future preloadImages() async {
+    await firestore.collection("gamelist").get().then((snapshots) {
+      snapshots.docs.forEach((element) {
+        _images.putIfAbsent(element.data()["id"],
+            () => Image.network(element.data()["imageLink"]));
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    preloadImages().then((_) {
+      _images.forEach((key, value) async {
+        await precacheImage(value.image, context).then((_) {
+          setState(() {});
+        });
+        _imageLoaded = true;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('새 게임 등록')),
+        appBar: AppBar(title: Text("새 게임 등록")),
         body: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.0),
-            child: StreamBuilder(
-              stream:
-                  firestore.collection('gamelist').orderBy('name').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Center(child: CircularProgressIndicator()));
+          child: _imageLoaded
+              ? Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: FutureBuilder(
+                    future:
+                        firestore.collection("gamelist").orderBy("rank").get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: Center(child: CircularProgressIndicator()));
 
-                return GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.docs.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemBuilder: (context, index) {
-                    return snapshot.data.docs[index].data()['imageLink'] == null
-                        ? Container()
-                        : Card(
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.docs.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) {
+                          return Card(
                             elevation: 0.4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(0.0),
@@ -82,15 +101,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     context,
                                     _createRoute(ProfileSearchPage(
                                         gameName: snapshot.data.docs[index]
-                                            .data()['name'])));
+                                            .data()["name"])));
                               },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Image.network(
-                                      snapshot.data.docs[index]
-                                          .data()['imageLink'],
-                                      fit: BoxFit.contain),
+                                  _images[
+                                      snapshot.data.docs[index].data()["id"]],
                                   Padding(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 30.0),
@@ -99,7 +116,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 4.0),
                                     child: Text(
-                                      snapshot.data.docs[index].data()['name'],
+                                      snapshot.data.docs[index].data()["name"],
                                       textAlign: TextAlign.center,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
@@ -110,11 +127,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               ),
                             ),
                           );
-                  },
-                );
-              },
-            ),
-          ),
+                        },
+                      );
+                    },
+                  ),
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(child: CircularProgressIndicator())),
         ),
       ),
     );

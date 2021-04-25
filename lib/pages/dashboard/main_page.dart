@@ -11,6 +11,83 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
+  int _index = 0;
+
+  List<Widget> swiper = [
+    Card(
+      elevation: 1.0,
+      semanticContainer: true,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Image.asset("assets/temp1.png",
+              width: double.infinity, height: 240, fit: BoxFit.cover),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              width: 300,
+              color: Colors.black54,
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'I Like Potatoes And Oranges',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          )
+        ],
+      ),
+    ),
+    Card(
+      elevation: 1.0,
+      semanticContainer: true,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Image.asset("assets/temp2.png",
+              width: double.infinity, height: 240, fit: BoxFit.cover),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              width: 300,
+              color: Colors.black54,
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'I Like Potatoes And Oranges',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          )
+        ],
+      ),
+    ),
+    Card(
+      elevation: 1.0,
+      semanticContainer: true,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Image.asset("assets/temp3.png",
+              width: double.infinity, height: 240, fit: BoxFit.cover),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              width: 300,
+              color: Colors.black54,
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'I Like Potatoes And Oranges',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          )
+        ],
+      ),
+    ),
+  ];
+
   Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -48,27 +125,28 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("메인")),
-      body: Center(
+      body: Container(
+        padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("처음 오셨나요?\n\'게임 등록\' 버튼을 눌러 게임을 등록해주세요"),
-            SizedBox(height: 20.0),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: MaterialButton(
-                elevation: 0,
-                minWidth: double.maxFinite,
-                height: 50,
-                onPressed: () {
-                  Navigator.push(context, _createRoute());
+            Text("업데이트 소식",
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10.0),
+            SizedBox(
+              height: 240,
+              child: PageView.builder(
+                itemCount: 3,
+                controller: PageController(),
+                onPageChanged: (index) => setState(() => _index = index),
+                itemBuilder: (context, index) {
+                  return swiper[index];
                 },
-                color: Theme.of(context).accentColor,
-                child: Text("게임 등록",
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
-                textColor: Colors.white,
               ),
             ),
+            SizedBox(height: 10.0),
+            Divider(thickness: 0.4, height: 1.0),
+            SizedBox(height: 10.0),
           ],
         ),
       ),
